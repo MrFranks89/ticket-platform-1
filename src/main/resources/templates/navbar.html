@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head></head>
+
+<nav th:fragment="navbar(pagename)" class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand" href="/home">
+			<i class="fas fa-pizza-slice" th:href="@{/tickets}"></i> Tickets Manager
+		</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+			aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item">
+					<a class="nav-link" th:href="@{/tickets}" th:classappend="${active == 'home' ? 'active' : ''}">Home</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" th:href="@{/tickets}"
+						th:classappend="${pagename == 'tickets'} ? active : not-active">Ticket</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link active" aria-current="page" th:href="@{/operatori}"
+						th:classappend="${pagename == 'operatori'} ? active : not-active" sec:authorize="hasAuthority('ADMIN')">Operatori</a>
+				</li>
+				<li class="nav-item d-flex align-items-center text-white ms-lg-3">
+					<span class="me-2">User: <span sec:authentication="name"></span></span>
+					<span class="me-2"><span sec:authentication="principal.authorities"></span></span>
+					<a class="btn btn-danger btn-sm" href="/logout">Logout <i class="fa-sign-out"></i></a>
+				</li>
+			</ul>
+		</div>
+		
+	</div>
+</nav>
+
+
+</html>

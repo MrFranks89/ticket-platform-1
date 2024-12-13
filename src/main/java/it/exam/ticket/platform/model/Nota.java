@@ -1,0 +1,96 @@
+package it.exam.ticket.platform.model;
+
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
+
+@Entity
+public class Nota {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@NotNull(message = "La data di creazione della nota non può essere vuota")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@FutureOrPresent
+	private LocalDate dataCreazione;
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@FutureOrPresent
+	private LocalDate dataModifica;
+
+	@NotNull(message = "La nota deve avere un titolo")
+	private String titolo;
+
+	@ManyToOne
+	@JoinColumn(name = "ticket_id", nullable = false)
+	@JsonBackReference
+	private Ticket ticket;
+
+	private boolean valid = true;
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	
+
+	public LocalDate getDataCreazione() {
+		return dataCreazione;
+	}
+
+	public void setDataCreazione(LocalDate dataCreazione) {
+		this.dataCreazione = dataCreazione;
+	}
+
+	public LocalDate getDataModifica() {
+		return dataModifica;
+	}
+
+	public void setDataModifica(LocalDate dataModifica) {
+		this.dataModifica = dataModifica;
+	}
+
+	public String getTitolo() {
+		return titolo;
+	}
+
+	public void setTitolo(String titolo) {
+		this.titolo = titolo;
+	}
+
+	public Ticket getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
+	}
+
+	public boolean areDatesValid() {
+		return dataModifica != null && dataCreazione != null && dataModifica.isAfter(dataCreazione);
+	}
+}

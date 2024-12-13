@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<div th:replace="~{fragments :: head}"></div>
+	<title th:text="${ticket.nome}"></title>
+	<style>
+		/* Stile della card */
+		.card {
+			border: none;
+			border-radius: 15px;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			margin-top: 30px;
+		}
+
+		.card-header {
+			background-color: #aeb0af;
+			color: white;
+			font-size: 1.5rem;
+			padding: 15px;
+			text-align: center;
+		}
+
+		.card img {
+			border-radius: 15px;
+			max-height: 300px;
+			object-fit: cover;
+		}
+
+		.card-body {
+			padding: 20px;
+			background-color: #f9f9f9;
+		}
+
+		.card-body dl {
+			margin-bottom: 15px;
+		}
+
+		.card-body dt {
+			font-weight: bold;
+			color: #555;
+		}
+
+		.card-body dd {
+			font-size: 1.2rem;
+			color: #333;
+		}
+
+		/* Pulsanti */
+		.btn {
+			transition: all 0.3s ease;
+			font-size: 1rem;
+		}
+
+		.btn:hover {
+			transform: scale(1.05);
+			opacity: 0.9;
+		}
+
+		/* Layout e Spaziatura */
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+
+		.btn-back {
+			margin-top: 30px;
+		}
+
+		/* Stile Tabella */
+		.table {
+			width: 100%;
+			border-radius: 8px;
+			overflow: hidden;
+			border: 1px solid #ddd;
+		}
+
+		.table thead {
+			background-color: #f1f1f1;
+		}
+
+		.table th,
+		.table td {
+			padding: 10px;
+			text-align: left;
+			font-size: 1rem;
+		}
+
+		.table tbody tr:hover {
+			background-color: #f7f7f7;
+		}
+
+		.table-striped tbody tr:nth-child(odd) {
+			background-color: #f9f9f9;
+		}
+
+		/* Centro pulsanti in basso */
+		.btn-group {
+			display: flex;
+			justify-content: center;
+			gap: 20px;
+			margin-top: 20px;
+		}
+
+		/* Adattamento per dispositivi mobili */
+		@media (max-width: 768px) {
+			.card-body {
+				padding: 15px;
+			}
+
+			.card img {
+				max-height: 250px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<nav th:replace="~{navbar :: navbar('tickets')}"> </nav>
+
+	<div class="container">
+		<div class="card">
+			<div class="row g-0">
+				<div class="card-header" th:text="*{titolo}"></div>
+
+				<div class="col-md-6 d-flex align-items-center">
+					<div class="card-body">
+						<h1 class="card-title text-center mb-4" th:text="*{titolo}"></h1>
+						<p><strong>Descrizione:</strong> <span th:text="${ticket.descrizione}"></span></p>
+						<p><strong>Stato:</strong> <span th:text="${ticket.stato}"></span></p>
+						<p><strong>Data di Creazione:</strong> <span th:text="${ticket.dataCreazione}"></span></p>
+						<p><strong>Ultima Modifica:</strong> <span th:text="${ticket.dataModifica}"></span></p>
+					</div>
+
+
+					<div class="operatore-details">
+						<h2>Operatore Assegnato</h2>
+						<p th:if="${ticket.operatore != null}">
+							<strong>Nome Operatore:</strong> <span th:text="${ticket.operatore.nome}"></span><br>
+							<strong>Email Operatore:</strong> <span th:text="${ticket.operatore.email}"></span>
+						</p>
+						<p th:if="${ticket.operatore == null}">
+							Nessun operatore assegnato.
+						</p>
+					</div>
+
+					<div class="note">
+						<h2>Note</h2>
+						<div th:each="nota : ${ticket.note}">
+							<div class="nota-item">
+								<p><strong>Autore:</strong> <span th:text="${nota.operatore.username}"></span></p>
+								<p><strong>Data Creazione:</strong> <span th:text="${nota.dataCreazione}"></span></p>
+								<p><strong>Testo:</strong></p>
+								<p th:text="${nota.testo}"></p>
+							</div>
+							<hr />
+						</div>
+
+						<form th:action="@{/note/create}" method="post">
+							<div class="form-group">
+								<label for="testo">Aggiungi una nuova nota:</label>
+								<textarea class="form-control" id="testo" name="testo" rows="3"
+									placeholder="Scrivi qui la tua nota..." required></textarea>
+							</div>
+							<input type="hidden" name="ticketId" th:value="${ticket.id}">
+							<!-- Nascondi l'ID del ticket -->
+							<button type="submit" class="btn btn-primary mt-3">Aggiungi Nota</button>
+						</form>
+					</div>
+
+					<div class="d-flex justify-content-between mt-4">
+						<a class="btn btn-success" th:href="@{|/tickets/edit/${tickets.id}|}">
+							<i class="fas fa-edit"></i> Modifica
+						</a>
+						<form id="delete-pizza" th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"
+							style="display: inline;" sec:authorize="hasAuthority('ADMIN')">
+							<button class="btn btn-danger" type="submit" id="submitButton"
+								onclick="return confirm('Vuoi eliminare questo ticket?')">
+								<i class="fas fa-trash"></i> Elimina
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<a class="btn btn-primary" th:href="@{/tickets}" role="button">
+			<i class="fas fa-arrow-left"></i> Torna all'elenco dei ticket'
+		</a>
+
+	</div>
+
+
+
+	<div th:replace="~{fragments :: scripts}"></div>
+</body>
+
+</html>

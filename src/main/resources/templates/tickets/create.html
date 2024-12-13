@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<div th:replace="~{fragments :: head}"></div>
+	<title>Crea un Ticket</title>
+
+	<style>
+		.form-container {
+			max-width: 500px;
+			margin: 0 auto;
+			margin-top: 3%;
+			padding: 20px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			font-family: Arial, sans-serif;
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+		}
+
+		label {
+			display: block;
+			font-weight: bold;
+			margin-bottom: 5px;
+		}
+
+		input[type="text"],
+		textarea {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		.form-row {
+			display: flex;
+			justify-content: space-between;
+			gap: 10px;
+		}
+
+		.form-row .form-group {
+			flex: 1;
+		}
+
+		button {
+			width: 100%;
+			padding: 10px;
+			background-color: #4CAF50;
+			color: white;
+			font-size: 16px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #45a049;
+		}
+
+		.col-md-3,
+		.col-md-12,
+		.col-6,
+		.col-3 {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<nav th:replace="~{navbar :: navbar('tickets')}"> </nav>
+
+	<div class="container form-container">
+		<h1 class="d-flex justify-content-center">Crea un Ticket</h1>
+		<hr />
+		<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/create}" th:method="post" class="row g-3">
+
+			<div class="col-md-12 form-group">
+				<label for="titolo" class="form-label">Titolo</label>
+				<input type="text" class="form-control" id="titolo" th:errorClass="is-invalid" placeholder="Titolo"
+					th:field="*{titolo}">
+				<div th:if="${#fields.hasErrors('titolo')}" class="invalid-feedback">
+					<ul>
+						<li th:each="err : ${#fields.errors('titolo')}" th:text="${err}"></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="col-md-12 form-group">
+				<label for="descrizione" class="form-label">Descrizione</label>
+				<input type="text" class="form-control" id="descrizione" th:errorClass="is-invalid"
+					placeholder="Descrizione" th:field="*{descrizione}">
+				<div th:if="${#fields.hasErrors('descrizione')}" class="invalid-feedback">
+					<ul>
+						<li th:each="err : ${#fields.errors('descrizione')}" th:text="${err}"></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="col-md-12 form-group">
+				<label for="categoria" class="form-label">Categoria</label>
+				<select id="categoria" name="categoria" th:field="*{categoria}" class="form-select form-select-sm"
+					aria-label="Categoria">
+					<option value="" selected disabled>Seleziona una categoria</option>
+					<option th:each="categoria : ${allCategorie}" th:value="${categoria.id}" th:text="${categoria.nome}"
+						th:selected="${categoria.id == ticket.categoria?.id}"></option>
+				</select>
+				<div th:if="${#fields.hasErrors('categoria')}" class="invalid-feedback">
+					<ul>
+						<li th:each="err : ${#fields.errors('categoria')}" th:text="${err}"></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="operatori">Seleziona gli operatori:</label>
+				<select id="operatori" name="operatori" th:field="*{operatori}" multiple="multiple" class="form-select">
+					<option th:each="operatore : ${allOperatori}" 
+					th:value="${operatore.id}"
+						th:text="${operatore.username}">
+					</option>
+				</select>
+			</div>
+
+			<div class="col-12 form-group">
+				<button type="submit" class="btn btn-primary mb-3">Salva Ticket</button>
+				<a class="btn btn-danger" th:href="@{/tickets}">Torna al menù</a>
+			</div>
+		</form>
+	</div>
+
+	<div th:replace="~{fragments :: scripts}"></div>
+</body>
+
+</html>

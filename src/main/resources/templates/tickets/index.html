@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:replace="~{fragments :: head}"></div>
+    <title>Tickets</title>
+	<style>
+			/* Stile della card */
+			.card {
+				border: none;
+				border-radius: 15px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+				overflow: hidden;
+				margin-top: 30px;
+			}
+
+			.card-header {
+				background-color: #aeb0af;
+				color: white;
+				font-size: 1.5rem;
+				padding: 15px;
+				text-align: center;
+			}
+
+			.card img {
+				border-radius: 15px;
+				max-height: 300px;
+				object-fit: cover;
+			}
+
+			.card-body {
+				padding: 20px;
+				background-color: #f9f9f9;
+			}
+
+			.card-body dl {
+				margin-bottom: 15px;
+			}
+
+			.card-body dt {
+				font-weight: bold;
+				color: #555;
+			}
+
+			.card-body dd {
+				font-size: 1.2rem;
+				color: #333;
+			}
+
+			/* Pulsanti */
+			.btn {
+				transition: all 0.3s ease;
+				font-size: 1rem;
+			}
+
+			.btn:hover {
+				transform: scale(1.05);
+				opacity: 0.9;
+			}
+
+			/* Layout e Spaziatura */
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 20px;
+			}
+
+			.btn-back {
+				margin-top: 30px;
+			}
+
+			/* Stile Tabella */
+			.table {
+				width: 100%;
+				border-radius: 8px;
+				overflow: hidden;
+				border: 1px solid #ddd;
+			}
+
+			.table thead {
+				background-color: #f1f1f1;
+			}
+
+			.table th, .table td {
+				padding: 10px;
+				text-align: left;
+				font-size: 1rem;
+			}
+
+			.table tbody tr:hover {
+				background-color: #f7f7f7;
+			}
+
+			.table-striped tbody tr:nth-child(odd) {
+				background-color: #f9f9f9;
+			}
+
+			/* Centro pulsanti in basso */
+			.btn-group {
+				display: flex;
+				justify-content: center;
+				gap: 20px;
+				margin-top: 20px;
+			}
+
+			/* Adattamento per dispositivi mobili */
+			@media (max-width: 768px) {
+				.card-body {
+					padding: 15px;
+				}
+
+				.card img {
+					max-height: 250px;
+				}
+			}
+		</style>
+</head>
+
+<body>
+    <nav th:replace="~{navbar :: navbar('tickets')}"> </nav>
+
+    <div class="container-lg">
+        <h1 class="d-flex justify-content-center mt-3">Tickets</h1>
+        <hr>
+
+        <div id="success-message" th:if="${successMessage}" class="alert alert-success" role="alert"
+            th:text="${successMessage}"></div>
+
+        <div class="container row g-3 justify-content-center align-items-center">
+            <a class="btn btn-success col-md-2 d-flex justify-content-center align-items-center" type="submit"
+                th:href="@{/tickets/create}"
+				sec:authorize="hasAuthority('ADMIN')">
+                <i class="fas fa-plus"></i> Aggiungi Ticket
+            </a>
+
+            <form th:action="@{/tickets}" method="get" class="col-md-8">
+                <div class="input-group">
+                    <input name="keyword" th:value="${keyword}" class="form-control" type="search"
+                        placeholder="Cerca un ticket..." aria-label="Search">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="container justify-content-center" th:if="${!tickets.isEmpty()}">
+            <table class="content table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Titolo</th>
+                        <th>Descrizione</th>
+                        <th>Stato</th>
+                        <th>Data Creazione</th>
+                        <th>Data Modifica</th>
+                        <th>Operatore Assegnato</th>
+						<th>Categoria</th>
+						<th></th>
+						<th></th>
+                    </tr>
+                </thead>
+				<tbody>
+				    <tr th:each="ticket :${tickets}" style="vertical-align: middle;">
+				        <td th:text="${ticket.titolo}" class="align-middle"></td>
+				        <td th:text="${ticket.descrizione}" class="align-middle"></td>
+						<td th:text="${ticket.stato}" class="align-middle"></td>
+				        <td th:text="${ticket.dataCreazione}" class="align-middle"></td>
+						<td th:text="${ticket.dataModifica}" class="align-middle"></td>
+						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>
+						<td th:text="${ticket.categoria.nome}"></td>
+						 <td class="align-middle">
+				            <a class="btn btn-primary" th:href="@{/tickets/show/{id}(id=${ticket.id})}">
+				                <i class="fas fa-ticket"></i>
+				            </a>
+				            <a class="btn btn-success" th:href="@{|/tickets/edit/${ticket.id}|}" sec:authorize="hasAuthority('ADMIN')">
+				                <i class="fas fa-edit"></i>
+				            </a>
+				        </td>
+				        <td class="align-middle">
+				            <form id="delete-ticket" th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"
+				                style="display:inline-block;" sec:authorize="hasAuthority('ADMIN')">
+				                <button class="btn btn-danger" type="submit" id="submitButton"
+				                    onclick="return confirm('Vuoi eliminare questo ticket?')">
+				                    <i class="fas fa-trash"></i>
+				                </button>
+				            </form>
+				        </td>
+				    </tr>
+				</tbody>
+            </table>
+        </div>
+
+        <div class="container">
+            <div class="content alert alert-primary text-center" role="alert" th:if="${tickets.isEmpty()}">
+                Non ci sono ticket
+            </div>
+        </div>
+    </div>
+	
+	
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var successMessage = document.getElementById('success-message');
+            if (successMessage) {
+                setTimeout(function () {
+                    successMessage.style.transition = 'opacity 1s';
+                    successMessage.style.opacity = '0';
+                    setTimeout(function () {
+                        successMessage.remove();
+                    }, 1000);
+                }, 2000);
+            }
+        });
+    </script>
+
+    <div th:replace="~{fragments :: scripts}"></div>
+</body>
+
+</html>
