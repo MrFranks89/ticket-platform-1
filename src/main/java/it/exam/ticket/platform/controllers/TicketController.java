@@ -70,16 +70,19 @@ public class TicketController {
 		return "tickets/index";
 	}
 
-	@GetMapping("/show/{id}")
+	@GetMapping("/{id}")
 	public String show(@PathVariable(name = "id") Long id, Model model) {
 
 		Optional<Ticket> ticketOptional = ticketRepo.findById(id);
 
 		if (ticketOptional.isPresent()) {
 			model.addAttribute("ticket", ticketOptional.get());
+			return "tickets/show";
+		} else {
+			model.addAttribute("errorMessage", "Ticket non trovato");
+			return "redirect:/tickets";
 		}
 
-		return "/tickets/show";
 	}
 
 	@GetMapping("/create")
@@ -106,10 +109,10 @@ public class TicketController {
 		if (formTicket.getDataCreazione() == null) {
 			formTicket.setDataCreazione(LocalDateTime.now());
 		}
-		
+
 		LocalDateTime now = LocalDateTime.now();
-	    formTicket.setDataCreazione(now);  
-	    formTicket.setDataModifica(now);
+		formTicket.setDataCreazione(now);
+		formTicket.setDataModifica(now);
 
 		if (formTicket.getStato() == null || formTicket.getStato().isEmpty()) {
 			formTicket.setStato("da fare");
@@ -131,7 +134,6 @@ public class TicketController {
 			return "tickets/create";
 		}
 
-
 		System.out.println(formTicket);
 
 		ticketRepo.save(formTicket);
@@ -144,6 +146,7 @@ public class TicketController {
 
 		model.addAttribute("ticket", ticketRepo.findById(id).get());
 		model.addAttribute("allOperatori", operatoriRepo.findAll());
+		model.addAttribute("allCategorie", categoriaRepo.findAll());
 
 		return "tickets/edit";
 	}
@@ -154,16 +157,11 @@ public class TicketController {
 
 		if (bindingResult.hasErrors()) {
 			return "ticket/edit";
-
 		}
 
 		Ticket ticket = ticketRepo.findById(id).orElseThrow();
 		new RuntimeException("Ticket non trovato");
-		
-		if (bindingResult.hasErrors()) {
-			return "tickets/edit";
-		}
-		
+
 		if (!formTicket.getTitolo().equals(ticket.getTitolo())) {
 			bindingResult.addError(new ObjectError("Titolo", "Il titolo non può essere cambiato"));
 			return "tickets/edit";
@@ -176,13 +174,21 @@ public class TicketController {
 			formTicket.setDataModifica(LocalDateTime.now());
 		}
 
+		if (formTicket.getDataCreazione() == null) {
+			formTicket.setDataCreazione(ticket.getDataCreazione());
+		}
+		
+		if (formTicket.getStato() == null || formTicket.getStato().isEmpty()) {
+            formTicket.setStato("da fare");
+        }
 
+        ticket.setStato(formTicket.getStato());
 
 		ticketRepo.save(formTicket);
 
 		redirectAttributes.addFlashAttribute("successMessage", "Ticket Modificato!");
 
-		return "redirect:/tickets/show/{id}";
+		return "redirect:/tickets/{id}";
 	}
 
 	@PostMapping("/delete/{id}")

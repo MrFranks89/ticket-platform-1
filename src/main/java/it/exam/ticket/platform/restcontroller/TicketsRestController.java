@@ -24,73 +24,31 @@ import it.exam.ticket.platform.repository.TicketRepository;
 import jakarta.validation.Valid;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/tickets")
 public class TicketsRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TicketsRestController.class);
+	@Autowired
+    private TicketRepository ticketRepository;
 
-    @Autowired
-    private TicketRepository ticketRepo;
-    
-    public TicketsRestController() {
-        System.out.println("TicketsRestController caricato!");
+    @GetMapping
+    public List<Ticket> getAllTickets() {
+        return ticketRepository.findAll();
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<Ticket>> index(@RequestParam(name = "keyword", required = false) String keyword) {
-        try {
-            if (keyword != null && !keyword.isBlank()) {
-                List<Ticket> tickets = ticketRepo.findByTitoloContaining(keyword);
-                return new ResponseEntity<>(tickets, HttpStatus.OK);
-            } else {
-                List<Ticket> tickets = ticketRepo.findAll();
-                return ResponseEntity.ok(tickets);
-            }
-        } catch (Exception e) {
-            logger.error("Errore durante il recupero dei ticket", e);
-            return ResponseEntity.badRequest().build();
-        }
+    @GetMapping("/categoria")
+    public List<Ticket> getTicketsByCategoria(@RequestParam String categoria) {
+        return ticketRepository.findByCategoria(categoria);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> update(@PathVariable Long id, @RequestBody Ticket ticket) {
-        try {
-            Optional<Ticket> byId = ticketRepo.findById(id);
-            if (byId.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            Ticket dbTicket = byId.get();
-            dbTicket.setDescrizione(ticket.getDescrizione());
-            ticketRepo.save(dbTicket);
-
-            return ResponseEntity.ok(dbTicket);
-        } catch (Exception e) {
-            logger.error("Errore durante l'aggiornamento del ticket", e);
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/stato")
+    public List<Ticket> getTicketsByStato(@RequestParam String stato) {
+        return ticketRepository.findByStato(stato);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
-        try {
-            if (!ticketRepo.existsById(id)) {
-                return ResponseEntity.notFound().build();
-            }
-
-            ticketRepo.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            logger.error("Errore durante la cancellazione del ticket", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    
-    
-    // Endpoint per creare un ticket
-    @PostMapping
-    public Ticket create(@Valid @RequestBody Ticket ticket) {
-    	return ticketRepo.save(ticket);
+    @GetMapping("/filtri")
+    public List<Ticket> getTicketsByCategoriaAndStato(
+            @RequestParam String categoria,
+            @RequestParam String stato) {
+        return ticketRepository.findByCategoriaStato(categoria, stato);
     }
 }

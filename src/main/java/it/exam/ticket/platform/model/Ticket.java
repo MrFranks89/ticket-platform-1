@@ -54,7 +54,7 @@ public class Ticket {
 	private Categoria categoria;
 	
 	@ManyToOne
-	@JoinColumn(name = "operatori_id", nullable = false)
+	@JoinColumn(name = "operatore_id", nullable = false)
 	private Operatori operatore;
 
 	public List<Nota> getNote() {

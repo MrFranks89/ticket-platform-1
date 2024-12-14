@@ -11,83 +11,115 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.exam.ticket.platform.model.Operatori;
 import it.exam.ticket.platform.model.Ticket;
 import it.exam.ticket.platform.repository.OperatoriRepository;
 import it.exam.ticket.platform.repository.TicketRepository;
+import it.ticket.platform.model.Operatore;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @Controller
 @RequestMapping("/operatori")
 public class OperatoriController {
 
-		@Autowired
-		private OperatoriRepository operatoriRepository;
-		
-		@Autowired
-		private TicketRepository ticketRepo;
-		
-		@GetMapping
-		public String index(Model model) {
-			
-			List<Operatori> all= operatoriRepository.findAll();
-			
+	@Autowired
+	private OperatoriRepository operatoriRepository;
+
+	@Autowired
+	private TicketRepository ticketRepo;
+
+	@GetMapping
+	public String index(Model model) {
+
+		List<Operatori> all = operatoriRepository.findAll();
+
+		model.addAttribute("operatori", all);
+		model.addAttribute("ope", new Operatori());
+
+		return "operatori/index";
+
+	}
+
+	@GetMapping("/{id}")
+	public String showOperatore(@PathVariable Long id, Model model) {
+		Operatori operatori = operatoriRepository.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
+		model.addAttribute("operatori", operatori);
+
+		List<Ticket> assignedTickets = ticketRepo.findByOperatoreId(id);
+		model.addAttribute("assignedTickets", assignedTickets);
+
+		return "operatori/show";
+	}
+	
+	@PostMapping("/{id}")
+	public String updateOperatore(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+
+	    Operatori operatore = operatoriRepository.findById(id)
+	            .orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
+
+	    boolean hasAssignedTickets = !ticketRepo.findByOperatoreId(id).isEmpty();
+
+	    operatore.setDisponibile(!hasAssignedTickets);
+	    operatoriRepository.save(operatore);
+
+
+	    redirectAttributes.addFlashAttribute("message", "Stato dell'operatore aggiornato con successo!");
+
+	    return "redirect:/operatori/{id}";
+	}
+
+
+
+
+	@PostMapping("/create")
+	public String create(@Valid @ModelAttribute(name = "ope") Operatori operatori, BindingResult bindingresult,
+			Model model) {
+
+		if (bindingresult.hasErrors()) {
+
+			List<Operatori> all = operatoriRepository.findAll();
+
 			model.addAttribute("operatori", all);
 			model.addAttribute("ope", new Operatori());
-			
-			return "operatori/index";
-			
-		}
-		
-		@PostMapping("/create")
-		public String create(@Valid @ModelAttribute(name = "ope") Operatori operatori,
-				BindingResult bindingresult, Model model) {
-			
-			if(bindingresult.hasErrors()) {
 
-				List<Operatori> all= operatoriRepository.findAll();
-				
-				model.addAttribute("operatori", all);
-				model.addAttribute("ope", new Operatori());
-				
-				
-				return "/operatori/index";
+			return "/operatori/index";
+		}
+
+		operatoriRepository.save(operatori);
+
+		return "redirect:/operatori";
+	}
+
+	@PostMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+		try {
+			Operatori operatore = operatoriRepository.findById(id)
+					.orElseThrow(() -> new IllegalArgumentException("Operatore non trovato"));
+
+			List<Ticket> ticketsAssociati = new ArrayList<>(operatore.getTicket());
+			for (Ticket ticket : ticketsAssociati) {
+				ticket.removeOperatore();
+				ticketRepo.save(ticket);
 			}
-			
-			operatoriRepository.save(operatori);
-			
-			return "redirect:/operatori";
+
+			operatoriRepository.delete(operatore);
+
+			redirectAttributes.addFlashAttribute("message", "Operatore eliminato con successo");
+		} catch (IllegalArgumentException e) {
+			redirectAttributes.addFlashAttribute("error", e.getMessage());
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error",
+					"Si è verificato un errore durante l'eliminazione dell'operatore");
 		}
-		
-		@PostMapping("/delete/{id}")
-		public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
-		    try {
-		        Operatori operatore = operatoriRepository.findById(id)
-		                .orElseThrow(() -> new IllegalArgumentException("Operatore non trovato"));
 
-
-		        List<Ticket> ticketsAssociati = new ArrayList<>(operatore.getTicket());
-		        for (Ticket ticket : ticketsAssociati) {
-		            ticket.removeOperatore();
-		            ticketRepo.save(ticket);
-		        }
-
-
-		        operatoriRepository.delete(operatore);
-
-		        redirectAttributes.addFlashAttribute("message", "Operatore eliminato con successo");
-		    } catch (IllegalArgumentException e) {
-		        redirectAttributes.addFlashAttribute("error", e.getMessage());
-		    } catch (Exception e) {
-		        redirectAttributes.addFlashAttribute("error", "Si è verificato un errore durante l'eliminazione dell'operatore");
-		    }
-
-		    return "redirect:/operatori";
-		}
+		return "redirect:/operatori";
+	}
 }

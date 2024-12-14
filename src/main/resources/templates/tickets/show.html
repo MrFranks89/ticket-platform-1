@@ -3,7 +3,7 @@
 
 <head>
 	<div th:replace="~{fragments :: head}"></div>
-	<title th:text="${ticket.nome}"></title>
+	<title th:text="${ticket.titolo}"></title>
 	<style>
 		/* Stile della card */
 		.card {
@@ -129,7 +129,9 @@
 					<div class="card-body">
 						<h1 class="card-title text-center mb-4" th:text="*{titolo}"></h1>
 						<p><strong>Descrizione:</strong> <span th:text="${ticket.descrizione}"></span></p>
-						<p><strong>Stato:</strong> <span th:text="${ticket.stato}"></span></p>
+						<p><strong>Stato:</strong> <span
+								th:text="${ticket.stato == 1 ? 'Da fare' : (ticket.stato == 2 ? 'In corso' : (ticket.stato == 3 ? 'Completato' : ''))}"></span>
+						</p>
 						<p><strong>Data di Creazione:</strong> <span th:text="${ticket.dataCreazione}"></span></p>
 						<p><strong>Ultima Modifica:</strong> <span th:text="${ticket.dataModifica}"></span></p>
 					</div>
@@ -159,19 +161,13 @@
 						</div>
 
 						<form th:action="@{/note/create}" method="post">
-							<div class="form-group">
-								<label for="testo">Aggiungi una nuova nota:</label>
-								<textarea class="form-control" id="testo" name="testo" rows="3"
-									placeholder="Scrivi qui la tua nota..." required></textarea>
-							</div>
 							<input type="hidden" name="ticketId" th:value="${ticket.id}">
-							<!-- Nascondi l'ID del ticket -->
 							<button type="submit" class="btn btn-primary mt-3">Aggiungi Nota</button>
 						</form>
 					</div>
 
 					<div class="d-flex justify-content-between mt-4">
-						<a class="btn btn-success" th:href="@{|/tickets/edit/${tickets.id}|}">
+						<a class="btn btn-success" th:href="@{|/tickets/edit/${ticket.id}|}">
 							<i class="fas fa-edit"></i> Modifica
 						</a>
 						<form id="delete-pizza" th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"

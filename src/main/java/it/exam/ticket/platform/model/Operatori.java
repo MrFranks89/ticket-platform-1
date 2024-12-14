@@ -3,8 +3,6 @@ package it.exam.ticket.platform.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 public class Operatori {
@@ -101,7 +99,7 @@ public class Operatori {
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Roles> roles;
 	
-	@OneToMany(mappedBy = "operatori", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "operatore", fetch = FetchType.LAZY)
 	private List <Ticket> ticket = new ArrayList<>();
 	
 	public void removeTicket(Ticket ticket) {

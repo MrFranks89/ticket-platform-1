@@ -75,26 +75,17 @@
 
 <body>
 	<nav th:replace="~{navbar :: navbar('note')}"> </nav>
-
 	<div class="container form-container">
-		
-		<div class="mb-4">
-		<h1>Dettaglio Ticket</h1>
-		<p><strong>Titolo:</strong> <span th:text="${ticket.titolo}">Titolo del Ticket</span></p>
-		<p><strong>Descrizione:</strong> <span th:text="${ticket.descrizione}">Descrizione del Ticket</span></p>
-		<p><strong>Stato:</strong> <span th:text="${ticket.stato}">Stato del Ticket</span></p>
-		<p><strong>Operatore:</strong> <span th:text="${ticket.operatore.username}">Nome Operatore</span></p>
-	</div>
-		
-		
+
 		<h1 class="d-flex justify-content-center">Crea una nota</h1>
 		<hr />
-		
-		
-		<form id="note-form" th:object="${nota}" 
-		th:action="${nota.id} != null ? @{/note/edit/{id}(id=${nota.id})} : @{/note/crea}" 
-		th:method="post" class="row g-3">
-			<input type="hidden" th:field="*{ticket.id}" id="ticket">
+
+
+		<form id="note-form" th:object="${nota}"
+			th:action="${nota.id} != null ? @{/note/edit/{id}(id=${nota.id})} : @{/note/create}" th:method="post"
+			class="row g-3">
+			<input type="hidden" th:field="*{ticket.id}" id="ticket" />
+			<input type="hidden" th:field="*{dataCreazione}" />
 
 			<div class="col-md-12 form-group">
 				<label for="nomeNota" class="form-label">Nome della nota</label>
@@ -107,15 +98,24 @@
 					</ul>
 				</div>
 
+				<div class="col-md-12 form-group">
+					<label for="testoNota" class="form-label">Testo della nota</label>
+					<textarea class="form-control" id="testoNota" th:field="*{testo}"
+						placeholder="Scrivi il testo della nota" required></textarea>
+					<div th:if="${#fields.hasErrors('testo')}" class="invalid-feedback">
+						<ul>
+							<li th:each="err : ${#fields.errors('testo')}" th:text="${err}"></li>
+						</ul>
+					</div>
+				</div>
 
-
-				
 
 				<div class="col-12 form-group">
-					<button type="submit" class="btn btn-primary mb-3"> <i class="fas fa-check"></i> Salva offerta </button>
-					<a class="btn btn-danger" th:href="@{/pizze/show/{id}(id=${offerta.pizza.id})}">
-					    <i class="fas fa-times "></i>Annulla
-					</a> 
+					<button type="submit" class="btn btn-primary mb-3"> <i class="fas fa-check"></i> Salva nota
+					</button>
+					<a class="btn btn-danger" th:href="@{/tickets/{id}(id=${nota.ticket.id})}">
+						<i class="fas fa-times "></i>Annulla
+					</a>
 				</div>
 
 			</div>
@@ -125,4 +125,5 @@
 		<div th:replace="~{fragments :: scripts}"></div>
 	</div>
 </body>
+
 </html>

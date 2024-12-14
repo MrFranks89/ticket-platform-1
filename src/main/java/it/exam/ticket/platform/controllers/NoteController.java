@@ -31,7 +31,7 @@ public class NoteController {
 	@Autowired
 	private TicketRepository ticketRepository;
 
-	@GetMapping("/crea")
+	@GetMapping("/create")
 	public String creaNota(@RequestParam(required = false) Long ticketId, Model model) {
 		Nota nuovaNota = new Nota();
 		if (ticketId != null) {
@@ -44,59 +44,35 @@ public class NoteController {
 		return "note/create";
 	}
 
-	@PostMapping("/crea")
+	@PostMapping("/create")
 	public String creaNota(@Valid @ModelAttribute("nota") Nota nota, BindingResult bindingResult,
-			@RequestParam(required = false) Long ticketId, @RequestParam(required = false) Model model) {
-
+			@RequestParam(required = false) Long ticketId, Model model) {
+		
 		if (bindingResult.hasErrors()) {
-			model.addAttribute("ticket", ticketRepository.findAll());
-			return "note/create";
+		    model.addAttribute("ticket", ticketRepository.findAll());
+		    return "note/create";
 		}
-
+		
 		if (ticketId != null) {
 			Ticket ticket = ticketRepository.findById(ticketId)
-					.orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-			nota.setTicket(ticket);
+	            .orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
+	    nota.setTicket(ticket);
 		}
 
+		if (nota.getDataCreazione() == null) {
+	        nota.setDataCreazione(LocalDate.now());
+	    }
+		
+	    System.out.println("Nota ricevuta: " + nota);
+	    System.out.println("TicketId ricevuto: " + ticketId);
+	    System.out.println("Errori di validazione: " + bindingResult.hasErrors());
 		noteRepository.save(nota);
-		return "redirect:/ticket/show/" + nota.getTicket().getId();
-	}
-
-	@GetMapping("/edit/{id}")
-	public String editNota(@PathVariable Long id, Model model) {
-		Nota nota = noteRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Nota non trovata"));
-
-		model.addAttribute("nota", nota);
-		model.addAttribute("ticket", ticketRepository.findAll());
-		return "note/edit";
-	}
-
-	@PostMapping("/edit/{id}")
-	public String aggiornaNota(@PathVariable Long id, @Valid @ModelAttribute("nota") Nota nota,
-			BindingResult bindingResult, @RequestParam(required = false) Long ticketId,
-			@RequestParam(required = false) Model model) {
-
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("ticket", ticketRepository.findAll());
-			return "note/edit";
-		}
-
-		if (ticketId != null) {
-			Ticket ticket = ticketRepository.findById(ticketId)
-					.orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-			nota.setTicket(ticket);
-		}
-
-		noteRepository.save(nota);
-		return "redirect:/ticket/show/" + nota.getTicket().getId();
+		return "redirect:/tickets/" + nota.getTicket().getId();
 	}
 
 	@PostMapping("/delete/{id}")
 	public String deleteNota(@PathVariable Long id) {
-		Nota nota = noteRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Nota non trovata"));
+		Nota nota = noteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Nota non trovata"));
 		noteRepository.delete(nota);
 		return "redirect:/ticket/show/" + nota.getTicket().getId();
 	}

@@ -79,7 +79,7 @@
 	<div class="container form-container">
 		<h1 class="d-flex justify-content-center">Modifica Ticket</h1>
 		<hr />
-		<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/edit/{id} (id=${tickets.id})}"
+		<form id="ticket-form" th:object="${ticket}" th:action="@{/tickets/edit/{id} (id=${ticket.id})}"
 			th:method="post" class="row g-3">
 
 
@@ -109,11 +109,11 @@
 				</div>
 			</div>
 
-			<select class="form-select form-select-sm" aria-label="Small select example">
-				<option selected>Modifica Stato</option>
-				<option value="1">Da fare</option>
-				<option value="2">In corso</option>
-				<option value="3">Completato</option>
+			<select class="form-select form-select-sm" th:field="*{stato}" aria-label="Small select example">
+				<option value="" selected disabled>Modifica Stato</option>
+				<option value="1" th:selected="${ticket.stato == 1}">Da fare</option>
+				<option value="2" th:selected="${ticket.stato == 2}">In corso</option>
+				<option value="3" th:selected="${ticket.stato == 3}">Completato</option>
 			</select>
 
 			<select id="categoria" name="categoria" th:field="*{categoria}" class="form-select form-select-sm"
@@ -128,10 +128,10 @@
 
 			<div th:text="${operatori}"></div>
 			<label for="operatore">Operatore Assegnato</label>
-			<select id="operatore" name="operatore" th:field="*{operatori}">
+			<select id="operatore" name="operatore" th:field="*{operatore}">
 				<option value="">Seleziona un operatore</option>
 				<!-- Lista dinamica degli operatori -->
-				<option th:each="operatore : ${allOperatori}" th:value="${operatori.id}" th:text="${operatori.username}"
+				<option th:each="operatore : ${allOperatori}" th:value="${operatore.id}" th:text="${operatore.username}"
 					required>
 				</option>
 			</select>

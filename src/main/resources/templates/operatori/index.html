@@ -77,6 +77,7 @@
 			}
 		}
 	</style>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -86,7 +87,7 @@
 		<h1 class="d-flex justify-content-evenly mt-3">Operatori</h1>
 		<hr />
 
-		<div class="row justify-content-evenly px-5">
+		<div class="row justify-content-evenly px-5" sec:authorize="hasAuthority('ADMIN')">
 			<div class="col-4">
 				<form th:action="@{/operatori/create}" method="post" class="col-md-8" id="operatori-form"
 					th:object="${ope}">
@@ -113,42 +114,48 @@
 					</div>
 
 					<button class="btn btn-primary" type="submit">Aggiungi</button>
+				</form>
+				<div th:if="${#fields.hasErrors('operatori')}" class="invalid-feedback">
+					<ul>
+						<li th:each="err : ${#fields.errors('operatori')}" th:text="${err}">
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div th:if="${#fields.hasErrors('operatori')}" class="invalid-feedback">
-				<ul>
-					<li th:each="err : ${#fields.errors('operatori')}" th:text="${err}">
-					</li>
-				</ul>
-			</div>
-			</form>
 		</div>
-	</div>
 	</div>
 
 	<div class="container-lg d-flex justify-content-center text-center" th:if="${!operatori.isEmpty()}">
 
 		<div class="col-6 col-md-8">
-
-
 			<table class="content table table-striped table-hover">
 				<thead>
 					<tr>
 						<th>Operatori</th>
 						<th>N° Tickets</th>
 						<th></th>
+						<th></th>
 					</tr>
 				</thead>
+
 				<tbody>
+
 					<tr th:each="operatori : ${operatori}" style="vertical-align: middle;">
 						<td th:text="${operatori.nome}" class="align-middle"></td>
+						<td th:text="${operatori.cognnome}" class="align-middle"></td>
+						<td th:text="${operatori.username}" class="align-middle"></td>
 						<td th:text="${operatori.ticket.size()}" class="align-middle"></td>
+						<td>
+
+							<a th:href="@{/operatori/{id}(id=${operatori.id})}" class="btn btn-primary">
+								Dettagli Operatore<i class="fas fa-ticket"></i>
+							</a>
+						</td>
 						<td>
 							<form th:action="@{|/operatori/delete/${operatori.id}|}" method="post" class="col-md-8"
 								id="delete-form" th:object="${ope}">
 								<button class="btn btn-danger" type="submit" id="submitButton"
-									onclick="return confirm('Sei sicuro?')"><i class="fas fa-trash"></i</button>
-
-
+									onclick="return confirm('Sei sicuro?')"><i class="fas fa-trash"></i></button>
 							</form>
 						</td>
 					</tr>
@@ -156,7 +163,6 @@
 			</table>
 		</div>
 	</div>
-
 
 	<div th:replace="~{fragments :: scripts}"></div>
 </body>

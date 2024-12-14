@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<div th:replace="~{fragments :: head}"></div>
+	<title>Dashboard Admin</title>
+
+	<style>
+		body {
+			font-family: 'Roboto', sans-serif;
+			background-color: #f9f9f9;
+		}
+
+		h1 {
+			color: #343a40;
+		}
+
+		.btn {
+			transition: all 0.3s ease;
+		}
+
+		.btn-success:hover {
+			background-color: #28a745;
+			border-color: #28a745;
+			color: white;
+		}
+
+		.btn-primary:hover {
+			background-color: #0056b3;
+			border-color: #0056b3;
+		}
+
+		.btn-danger:hover {
+			background-color: #c82333;
+			border-color: #c82333;
+		}
+
+		img {
+			border-radius: 8px;
+			border: 1px solid #ddd;
+			padding: 5px;
+		}
+
+		.table {
+			margin-top: 20px;
+		}
+
+		.table thead {
+			background-color: #343a40;
+			color: white;
+		}
+
+		.table tbody tr:hover {
+			background-color: #f1f1f1;
+			transition: background-color 0.3s ease;
+		}
+
+		#success-message {
+			text-align: center;
+		}
+
+		/* per mobile */
+		@media (max-width: 768px) {
+			.btn {
+				width: 100%;
+				margin-bottom: 10px;
+			}
+
+			.input-group {
+				flex-direction: column;
+			}
+
+			.input-group input {
+				margin-bottom: 10px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<nav th:replace="~{navbar :: navbar('home')}"> </nav>
+	<nav class="navbar navbar-expand-lg navbar-dark">
+		<ul class="navbar-nav">
+			<li class="nav-item"><a class="nav-link" href="/home" sec:authorize="hasAuthority('ADMIN')">Dashboard
+					Admin</a></li>
+			<li class="nav-item"><a class="nav-link" href="/tickets">Gestione Ticket</a></li>
+			<li class="nav-item"><a class="nav-link" href="/operatori">Gestione Operatori</a></li>
+			<li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+		</ul>
+	</nav>
+
+	<div class="container-lg">
+		<div class="d-flex justify-content-center align-items-center mt-3">
+			<h1>Benvenuto, Admin</h1>
+		</div>
+		<div class="d-flex justify-content-center align-items-center">
+			<p>Gestisci i ticket, operatori e le loro attività</p>
+		</div>
+		<hr>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 text-center">
+					<a href="/tickets" class="btn btn-primary btn-lg mt-3">Gestisci Ticket</a>
+				</div>
+				<div class="col-md-6 text-center">
+					<a href="/operatori" class="btn btn-primary btn-lg mt-3">Gestisci Operatori</a>
+				</div>
+
+			</div>
+		</div>
+
+		<form th:action="@{/tickets}" method="get" class="d-flex mb-4">
+			<input name="keyword" th:value="${keyword}" class="form-control me-2" type="search"
+				placeholder="Cerca un ticket" aria-label="Search">
+			<button class="btn btn-primary" type="submit">
+				<i class="fas fa-search"></i>
+			</button>
+		</form>
+
+		<div class="table-responsive mt-5">
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>Titolo</th>
+						<th>Descrizione</th>
+						<th>Stato</th>
+						<th>Data Creazione</th>
+						<th>Data Modifica</th>
+						<th>Operatore</th>
+						<th>Categoria</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="ticket : ${tickets}">
+						<td th:text="${ticket.titolo}"></td>
+						<td th:text="${ticket.descrizione}"></td>
+						<td th:text="${ticket.stato}"></td>
+						<td th:text="${ticket.dataCreazione}"></td>
+						<td th:text="${ticket.dataModifica}"></td>
+						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>
+						<td th:text="${ticket.categoria.nome}"></td>
+						<td>
+							<a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli<i
+									class="fas fa-ticket"></i></a>
+						</td>
+						<td>
+							<a th:href="@{|/tickets/edit/${ticket.id}|}" class="btn btn-success">Modifica<i
+									class="fas fa-edit"></i></a>
+						<td>
+							<form th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"
+								style="display:inline-block;" sec:authorize="hasAuthority('ADMIN')">
+								<button class="btn btn-danger" type="submit"
+									onclick="return confirm('Vuoi eliminare questo ticket?')"><i
+										class="fas fa-trash"></i>Elimina</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+
+		<div class="operator-list mt-5">
+			<h2>Operatori</h2>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nome</th>
+						<th>Email</th>
+						<th>Ticket Assegnati</th>
+						<th>Azioni</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="operatore : ${operatori}">
+						<td th:text="${operatore.id}"></td>
+						<td th:text="${operatore.nome}"></td>
+						<td th:text="${operatore.email}"></td>
+						<td th:text="${operatore.ticket.size()}"></td>
+						<td>
+							<a th:href="@{/operatori/{id}(id=${operatore.id})}" class="btn btn-info btn-sm">Dettagli</a>
+							<a th:href="@{/operatori/edit/{id}(id=${operatore.id})}"
+								class="btn btn-warning btn-sm">Modifica</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div th:replace="~{fragments :: scripts}"></div>
+</body>
+
+</html>

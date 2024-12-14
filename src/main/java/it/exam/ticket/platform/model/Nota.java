@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,17 +24,14 @@ public class Nota {
 
 	@NotNull(message = "La data di creazione della nota non può essere vuota")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@FutureOrPresent
 	private LocalDate dataCreazione;
-
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	@FutureOrPresent
-	private LocalDate dataModifica;
 
 	@NotNull(message = "La nota deve avere un titolo")
 	private String titolo;
+	
+	private String testo;
 
-	@ManyToOne
+	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "ticket_id", nullable = false)
 	@JsonBackReference
 	private Ticket ticket;
@@ -56,22 +54,12 @@ public class Nota {
 		this.id = id;
 	}
 
-	
-
 	public LocalDate getDataCreazione() {
 		return dataCreazione;
 	}
 
 	public void setDataCreazione(LocalDate dataCreazione) {
 		this.dataCreazione = dataCreazione;
-	}
-
-	public LocalDate getDataModifica() {
-		return dataModifica;
-	}
-
-	public void setDataModifica(LocalDate dataModifica) {
-		this.dataModifica = dataModifica;
 	}
 
 	public String getTitolo() {
@@ -82,6 +70,14 @@ public class Nota {
 		this.titolo = titolo;
 	}
 
+	public String getTesto() {
+		return testo;
+	}
+
+	public void setTesto(String testo) {
+		this.testo = testo;
+	}
+
 	public Ticket getTicket() {
 		return ticket;
 	}
@@ -90,7 +86,4 @@ public class Nota {
 		this.ticket = ticket;
 	}
 
-	public boolean areDatesValid() {
-		return dataModifica != null && dataCreazione != null && dataModifica.isAfter(dataCreazione);
-	}
 }
