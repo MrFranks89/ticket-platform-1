@@ -12,10 +12,10 @@ public interface TicketRepository extends JpaRepository<Ticket, Long>{
 	
 	public List<Ticket> findByOperatoreId(Long id);
 	
-	List<Ticket> findByCategoria(String categoria);
+	List<Ticket> findByCategoria_nome(String categoriaNome);
 
     List<Ticket> findByStato(String stato);
     
-    List<Ticket> findByCategoriaStato(String categoria, String stato);
+    List<Ticket> findByCategoria_NomeAndStato(String categoriaNome, String stato);
 	
 }

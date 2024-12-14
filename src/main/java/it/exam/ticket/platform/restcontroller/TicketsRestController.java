@@ -37,7 +37,7 @@ public class TicketsRestController {
 
     @GetMapping("/categoria")
     public List<Ticket> getTicketsByCategoria(@RequestParam String categoria) {
-        return ticketRepository.findByCategoria(categoria);
+        return ticketRepository.findByCategoria_nome(categoria);
     }
 
     @GetMapping("/stato")
@@ -49,6 +49,6 @@ public class TicketsRestController {
     public List<Ticket> getTicketsByCategoriaAndStato(
             @RequestParam String categoria,
             @RequestParam String stato) {
-        return ticketRepository.findByCategoriaStato(categoria, stato);
+        return ticketRepository.findByCategoria_NomeAndStato(categoria, stato);
     }
 }

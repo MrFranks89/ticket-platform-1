@@ -77,11 +77,11 @@
 	</style>
 </head>
 
-<body sec:authorize="hasAuthority('ADMIN')">
-	<nav th:replace="~{navbar :: navbar('home')}"> </nav>
+<body>
+	<nav th:replace="~{navbar :: navbar('admin')}"> </nav>
 	<nav class="navbar navbar-expand-lg navbar-dark">
 		<ul class="navbar-nav">
-			<li class="nav-item"><a class="nav-link" href="/home" sec:authorize="hasAuthority('ADMIN')">Dashboard
+			<li class="nav-item"><a class="nav-link" href="/admin" sec:authorize="hasAuthority('ADMIN')">Dashboard
 					Admin</a></li>
 			<li class="nav-item"><a class="nav-link" href="/tickets">Gestione Ticket</a></li>
 			<li class="nav-item"><a class="nav-link" href="/operatori">Gestione Operatori</a></li>
@@ -133,7 +133,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="ticket : ${tickets}">
+					<td th:each="ticket : ${tickets}">
 						<td th:text="${ticket.titolo}"></td>
 						<td th:text="${ticket.descrizione}"></td>
 						<td th:text="${ticket.stato}"></td>
@@ -153,6 +153,12 @@
 									onclick="return confirm('Vuoi eliminare questo ticket?')"><i
 										class="fas fa-trash"></i>Elimina</button>
 							</form>
+						</td>
+						<td>
+						<form th:action="@{/note/create}" method="post">
+							<input type="hidden" name="ticketId" th:value="${ticket.id}">
+							<button type="submit" class="btn btn-primary mt-3">Aggiungi Nota</button>
+						</form>
 						</td>
 					</tr>
 				</tbody>
