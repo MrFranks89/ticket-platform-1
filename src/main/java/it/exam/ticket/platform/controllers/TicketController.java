@@ -137,6 +137,10 @@ public class TicketController {
 		System.out.println(formTicket);
 
 		ticketRepo.save(formTicket);
+
+		Operatori operatore = formTicket.getOperatore();
+		operatoriRepo.save(operatore);
+
 		redirectAttributes.addFlashAttribute("successMessage", "Ticket creato con successo!");
 		return "redirect:/tickets";
 	}
@@ -177,14 +181,17 @@ public class TicketController {
 		if (formTicket.getDataCreazione() == null) {
 			formTicket.setDataCreazione(ticket.getDataCreazione());
 		}
-		
-		if (formTicket.getStato() == null || formTicket.getStato().isEmpty()) {
-            formTicket.setStato("da fare");
-        }
 
-        ticket.setStato(formTicket.getStato());
+		if (formTicket.getStato() == null || formTicket.getStato().isEmpty()) {
+			formTicket.setStato("da fare");
+		}
+
+		ticket.setStato(formTicket.getStato());
 
 		ticketRepo.save(formTicket);
+
+		Operatori operatore = formTicket.getOperatore();
+		operatoriRepo.save(operatore);
 
 		redirectAttributes.addFlashAttribute("successMessage", "Ticket Modificato!");
 

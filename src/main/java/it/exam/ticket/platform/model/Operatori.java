@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
-
 @Entity
 public class Operatori {
 
@@ -29,8 +28,8 @@ public class Operatori {
 
 	private String password;
 
-	private boolean disponibile;
-	
+	private boolean attivo;
+
 	public Long getId() {
 		return id;
 	}
@@ -38,7 +37,6 @@ public class Operatori {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
 
 	public String getNome() {
 		return nome;
@@ -80,12 +78,12 @@ public class Operatori {
 		this.password = password;
 	}
 
-	public boolean isDisponibile() {
-		return disponibile;
+	public boolean isAttivo() {
+		return ticket.stream().noneMatch(t -> !"completato".equals(t.getStato()));
 	}
 
-	public void setDisponibile(boolean disponibile) {
-		this.disponibile = disponibile;
+	public void setAttivo(boolean attivo) {
+		this.attivo = attivo;
 	}
 
 	public List<Ticket> getTicket() {
@@ -95,15 +93,15 @@ public class Operatori {
 	public void setTicket(List<Ticket> ticket) {
 		this.ticket = ticket;
 	}
-	
+
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Roles> roles;
-	
+
 	@OneToMany(mappedBy = "operatore", fetch = FetchType.LAZY)
-	private List <Ticket> ticket = new ArrayList<>();
-	
+	private List<Ticket> ticket = new ArrayList<>();
+
 	public void removeTicket(Ticket ticket) {
-        this.ticket.remove(ticket);
-        ticket.setOperatore(null);
-    }
+		this.ticket.remove(ticket);
+		ticket.setOperatore(null);
+	}
 }

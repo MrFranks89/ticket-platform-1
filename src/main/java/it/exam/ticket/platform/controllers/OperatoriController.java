@@ -65,12 +65,8 @@ public class OperatoriController {
 	    Operatori operatore = operatoriRepository.findById(id)
 	            .orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
 
-	    boolean hasAssignedTickets = !ticketRepo.findByOperatoreId(id).isEmpty();
-
-	    operatore.setDisponibile(!hasAssignedTickets);
 	    operatoriRepository.save(operatore);
-
-
+	
 	    redirectAttributes.addFlashAttribute("message", "Stato dell'operatore aggiornato con successo!");
 
 	    return "redirect:/operatori/{id}";

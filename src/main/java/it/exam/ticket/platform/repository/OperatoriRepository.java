@@ -8,6 +8,6 @@ import it.exam.ticket.platform.model.Operatori;
 
 public interface OperatoriRepository extends JpaRepository<Operatori, Long> {
 
-	public List<Operatori> findByDisponibile(boolean disponibile);
+	public List<Operatori> findByAttivo(boolean attivo);
 	 public List<Operatori> findAll();
 }
