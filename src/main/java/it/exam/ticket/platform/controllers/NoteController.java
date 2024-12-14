@@ -40,7 +40,7 @@ public class NoteController {
 			nuovaNota.setTicket(ticket);
 		}
 		model.addAttribute("nota", nuovaNota);
-		model.addAttribute("ticket", ticketRepository.findAll());
+		model.addAttribute("ticketId", ticketId);
 		return "note/create";
 	}
 
@@ -48,6 +48,7 @@ public class NoteController {
 	public String creaNota(@Valid @ModelAttribute("nota") Nota nota, BindingResult bindingResult,
 			@RequestParam(required = false) Long ticketId, Model model) {
 		
+
 		if (bindingResult.hasErrors()) {
 		    model.addAttribute("ticket", ticketRepository.findAll());
 		    return "note/create";
@@ -68,11 +69,10 @@ public class NoteController {
 	        nota.setDataCreazione(LocalDate.now());
 	    }
 		
-	    System.out.println("Nota ricevuta: " + nota);
-	    System.out.println("TicketId ricevuto: " + ticketId);
-	    System.out.println("Errori di validazione: " + bindingResult.hasErrors());
+		System.out.println("TicketId ricevuto: " + ticketId);
+		System.out.println("Nota ricevuta: " + nota);
 		noteRepository.save(nota);
-		return "redirect:/tickets/" + nota.getTicket().getId();
+		return "redirect:/tickets/{id}" + nota.getTicket().getId();
 	}
 
 	@PostMapping("/delete/{id}")

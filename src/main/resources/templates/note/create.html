@@ -83,7 +83,7 @@
 
 		<form th:action="@{/note/create}" method="post" th:object="${nota}" class="row g-3">
 			<input type="hidden" name="ticketId" th:value="${ticketId}"/>
-			<input type="hidden" th:field="*{dataCreazione}" />
+			<input th:field="*{dataCreazione}" />
 
 			<div class="col-md-12 form-group">
 				<label for="nomeNota" class="form-label">Nome della nota</label>
@@ -111,7 +111,7 @@
 				<div class="col-12 form-group">
 					<button type="submit" class="btn btn-primary mb-3"> <i class="fas fa-check"></i> Salva nota
 					</button>
-					<a class="btn btn-danger" th:href="@{/tickets/{id}(id=${nota.ticket.id})}">
+					<a class="btn btn-danger" th:href="@{/tickets/{id}(id=${ticketId})}">
 						<i class="fas fa-times "></i>Annulla
 					</a>
 				</div>

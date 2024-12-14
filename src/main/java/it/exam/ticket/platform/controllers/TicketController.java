@@ -216,7 +216,7 @@ public class TicketController {
 		nota.setDataCreazione(LocalDate.now());
 
 		model.addAttribute("nota", nota);
-		// model.addAttribute("ticketId", id);
+		model.addAttribute("ticketId", id);
 
 		return "note/edit";
 	}

@@ -29,6 +29,6 @@ public class AdminController {
        model.addAttribute("tickets", tickets);
        model.addAttribute("operatori", operatori);
     	
-    	return "admin";
+    	return "admin/index";
     }
 }

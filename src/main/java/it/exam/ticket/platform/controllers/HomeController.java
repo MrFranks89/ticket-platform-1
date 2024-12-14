@@ -13,23 +13,22 @@ import it.exam.ticket.platform.repository.OperatoriRepository;
 import it.exam.ticket.platform.repository.TicketRepository;
 
 @Controller
-	public class HomeController {
+public class HomeController {
 
 	@Autowired
 	private TicketRepository ticketRepo;
-	
+
 	@Autowired
 	private OperatoriRepository operatoreRepo;
-	
-	    @GetMapping("/home")
-	    public String home(Model model){
-	       List<Ticket> tickets = ticketRepo.findAll();
-	       List<Operatori> operatori = operatoreRepo.findAll();
-	       
-	       model.addAttribute("tickets", tickets);
-	       model.addAttribute("operatori", operatori);
-	    	
-	    	return "home";
-	    }
-	}
 
+	@GetMapping("/home")
+	public String home(Model model) {
+		List<Ticket> tickets = ticketRepo.findAll();
+		List<Operatori> operatori = operatoreRepo.findAll();
+
+		model.addAttribute("tickets", tickets);
+		model.addAttribute("operatori", operatori);
+
+		return "home";
+	}
+}
