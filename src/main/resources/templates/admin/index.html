@@ -109,14 +109,20 @@
 
 			</div>
 		</div>
-
-		<form th:action="@{/tickets}" method="get" class="d-flex mb-4">
-			<input name="keyword" th:value="${keyword}" class="form-control me-2" type="search"
-				placeholder="Cerca un ticket" aria-label="Search">
-			<button class="btn btn-primary" type="submit">
-				<i class="fas fa-search"></i>
-			</button>
-		</form>
+		
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 text-center">
+					<form th:action="@{/tickets}" method="get" class="d-flex mb-4">
+						<input name="keyword" th:value="${keyword}" class="form-control me-2" type="search"
+							placeholder="Cerca un ticket" aria-label="Search">
+						<button class="btn btn-primary" type="submit">
+							<i class="fas fa-search"></i>
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
 
 		<div class="table-responsive mt-5">
 			<table class="table table-striped table-hover">
@@ -134,32 +140,32 @@
 				</thead>
 				<tbody>
 					<td th:each="ticket : ${tickets}">
-						<td th:text="${ticket.titolo}"></td>
-						<td th:text="${ticket.descrizione}"></td>
-						<td th:text="${ticket.stato}"></td>
-						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>
-						<td th:text="${ticket.categoria.nome}"></td>
-						<td>
-							<a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli<i
-									class="fas fa-ticket"></i></a>
-						</td>
-						<td>
-							<a th:href="@{|/tickets/edit/${ticket.id}|}" class="btn btn-success">Modifica<i
-									class="fas fa-edit"></i></a>
-						<td>
-							<form th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"
-								style="display:inline-block;" >
-								<button class="btn btn-danger" type="submit"
-									onclick="return confirm('Vuoi eliminare questo ticket?')"><i
-										class="fas fa-trash"></i>Elimina</button>
-							</form>
-						</td>
-						<td>
+					<td th:text="${ticket.titolo}"></td>
+					<td th:text="${ticket.descrizione}"></td>
+					<td th:text="${ticket.stato}"></td>
+					<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>
+					<td th:text="${ticket.categoria.nome}"></td>
+					<td>
+						<a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli<i
+								class="fas fa-ticket"></i></a>
+					</td>
+					<td>
+						<a th:href="@{|/tickets/edit/${ticket.id}|}" class="btn btn-success">Modifica<i
+								class="fas fa-edit"></i></a>
+					<td>
+						<form th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"
+							style="display:inline-block;">
+							<button class="btn btn-danger" type="submit"
+								onclick="return confirm('Vuoi eliminare questo ticket?')"><i
+									class="fas fa-trash"></i>Elimina</button>
+						</form>
+					</td>
+					<td>
 						<form th:action="@{/note/create}" method="post">
 							<input type="hidden" name="ticketId" th:value="${ticket.id}">
 							<button type="submit" class="btn btn-primary mt-3">Aggiungi Nota</button>
 						</form>
-						</td>
+					</td>
 					</tr>
 				</tbody>
 			</table>

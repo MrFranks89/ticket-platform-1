@@ -163,9 +163,7 @@
 					<tr th:each="ticket :${tickets}" style="vertical-align: middle;">
 						<td th:text="${ticket.titolo}" class="align-middle"></td>
 						<td th:text="${ticket.descrizione}" class="align-middle"></td>
-						<td th:text="${ticket.stato == 1 ? 'Da fare' : (ticket.stato == 2 ? 'In corso' : (ticket.stato == 3 ? 'Completato' : ''))}"
-							class="align-middle"></td>
-
+						<td th:text="${ticket.stato}" class="align-middle"></td>
 						<td th:text="${ticket.dataCreazione}" class="align-middle"></td>
 						<td th:text="${ticket.dataModifica}" class="align-middle"></td>
 						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>

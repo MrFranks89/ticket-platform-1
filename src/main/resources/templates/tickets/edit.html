@@ -111,9 +111,9 @@
 
 			<select class="form-select form-select-sm" th:field="*{stato}" aria-label="Small select example">
 				<option value="" selected disabled>Modifica Stato</option>
-				<option value="1" th:selected="${ticket.stato == 1}">Da fare</option>
-				<option value="2" th:selected="${ticket.stato == 2}">In corso</option>
-				<option value="3" th:selected="${ticket.stato == 3}">Completato</option>
+				<option value="Da_Fare" th:selected="${ticket.stato == 1}">Da fare</option>
+				<option value="In_Corso" th:selected="${ticket.stato == 2}">In corso</option>
+				<option value="Completato" th:selected="${ticket.stato == 3}">Completato</option>
 			</select>
 
 			<select id="categoria" name="categoria" th:field="*{categoria}" class="form-select form-select-sm"

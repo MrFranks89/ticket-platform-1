@@ -81,10 +81,8 @@
 		<hr />
 
 
-		<form id="note-form" th:object="${nota}"
-			th:action="${nota.id} != null ? @{/note/edit/{id}(id=${nota.id})} : @{/note/create}" th:method="post"
-			class="row g-3">
-			<input type="hidden" th:field="*{ticket.id}" id="ticket" />
+		<form th:action="@{/note/create}" method="post" th:object="${nota}" class="row g-3">
+			<input type="hidden" name="ticketId" th:value="${ticketId}"/>
 			<input type="hidden" th:field="*{dataCreazione}" />
 
 			<div class="col-md-12 form-group">

@@ -129,9 +129,7 @@
 					<div class="card-body">
 						<h1 class="card-title text-center mb-4" th:text="*{titolo}"></h1>
 						<p><strong>Descrizione:</strong> <span th:text="${ticket.descrizione}"></span></p>
-						<p><strong>Stato:</strong> <span
-								th:text="${ticket.stato == 1 ? 'Da fare' : (ticket.stato == 2 ? 'In corso' : (ticket.stato == 3 ? 'Completato' : ''))}"></span>
-						</p>
+						<p><strong>Stato:</strong> <span th:text="${ticket.stato}"></span></p>
 						<p><strong>Data di Creazione:</strong> <span th:text="${ticket.dataCreazione}"></span></p>
 						<p><strong>Ultima Modifica:</strong> <span th:text="${ticket.dataModifica}"></span></p>
 					</div>

@@ -54,10 +54,15 @@ public class NoteController {
 		}
 		
 		if (ticketId != null) {
-			Ticket ticket = ticketRepository.findById(ticketId)
+	        Ticket ticket = ticketRepository.findById(ticketId)
 	            .orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-	    nota.setTicket(ticket);
-		}
+	        nota.setTicket(ticket);
+	    } else if (nota.getTicket() == null) {
+	    	
+	        model.addAttribute("error", "È necessario associare la nota a un ticket");
+	        model.addAttribute("ticket", ticketRepository.findAll());
+	        return "note/create";
+	    }
 
 		if (nota.getDataCreazione() == null) {
 	        nota.setDataCreazione(LocalDate.now());
