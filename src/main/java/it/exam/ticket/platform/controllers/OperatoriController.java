@@ -18,7 +18,6 @@ import it.exam.ticket.platform.model.Operatori;
 import it.exam.ticket.platform.model.Ticket;
 import it.exam.ticket.platform.repository.OperatoriRepository;
 import it.exam.ticket.platform.repository.TicketRepository;
-import it.ticket.platform.model.Operatore;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
