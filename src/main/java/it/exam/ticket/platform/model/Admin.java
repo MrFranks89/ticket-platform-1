@@ -11,8 +11,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-public class User {
-
+public class Admin {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

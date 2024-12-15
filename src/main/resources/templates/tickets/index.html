@@ -5,113 +5,71 @@
 	<div th:replace="~{fragments :: head}"></div>
 	<title>Tickets</title>
 	<style>
-		/* Stile della card */
-		.card {
-			border: none;
-			border-radius: 15px;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-			overflow: hidden;
-			margin-top: 30px;
-		}
-
-		.card-header {
-			background-color: #aeb0af;
-			color: white;
-			font-size: 1.5rem;
-			padding: 15px;
-			text-align: center;
-		}
-
-		.card img {
-			border-radius: 15px;
-			max-height: 300px;
-			object-fit: cover;
-		}
-
-		.card-body {
-			padding: 20px;
+		body {
+			font-family: 'Roboto', sans-serif;
 			background-color: #f9f9f9;
 		}
 
-		.card-body dl {
-			margin-bottom: 15px;
+		h1 {
+			color: #343a40;
 		}
 
-		.card-body dt {
-			font-weight: bold;
-			color: #555;
-		}
-
-		.card-body dd {
-			font-size: 1.2rem;
-			color: #333;
-		}
-
-		/* Pulsanti */
 		.btn {
 			transition: all 0.3s ease;
-			font-size: 1rem;
 		}
 
-		.btn:hover {
-			transform: scale(1.05);
-			opacity: 0.9;
+		.btn-success:hover {
+			background-color: #28a745;
+			border-color: #28a745;
+			color: white;
 		}
 
-		/* Layout e Spaziatura */
-		.container {
-			max-width: 1200px;
-			margin: 0 auto;
-			padding: 20px;
+		.btn-primary:hover {
+			background-color: #0056b3;
+			border-color: #0056b3;
 		}
 
-		.btn-back {
-			margin-top: 30px;
+		.btn-danger:hover {
+			background-color: #c82333;
+			border-color: #c82333;
 		}
 
-		/* Stile Tabella */
-		.table {
-			width: 100%;
+		img {
 			border-radius: 8px;
-			overflow: hidden;
 			border: 1px solid #ddd;
+			padding: 5px;
 		}
 
-		.table thead {
-			background-color: #f1f1f1;
-		}
-
-		.table th,
-		.table td {
-			padding: 10px;
-			text-align: left;
-			font-size: 1rem;
-		}
-
-		.table tbody tr:hover {
-			background-color: #f7f7f7;
-		}
-
-		.table-striped tbody tr:nth-child(odd) {
-			background-color: #f9f9f9;
-		}
-
-		/* Centro pulsanti in basso */
-		.btn-group {
-			display: flex;
-			justify-content: center;
-			gap: 20px;
+		.table {
 			margin-top: 20px;
 		}
 
-		/* Adattamento per dispositivi mobili */
+		.table thead {
+			background-color: #343a40;
+			color: white;
+		}
+
+		.table tbody tr:hover {
+			background-color: #f1f1f1;
+			transition: background-color 0.3s ease;
+		}
+
+		#success-message {
+			text-align: center;
+		}
+
 		@media (max-width: 768px) {
-			.card-body {
-				padding: 15px;
+			.btn {
+				width: 100%;
+				margin-bottom: 10px;
 			}
 
-			.card img {
-				max-height: 250px;
+			.input-group {
+				flex-direction: column;
+			}
+
+			.input-group input {
+				margin-bottom: 10px;
 			}
 		}
 	</style>
@@ -144,8 +102,8 @@
 			</form>
 		</div>
 
-		<div class="container justify-content-center" th:if="${!tickets.isEmpty()}">
-			<table class="content table table-striped table-hover">
+		<div class="table-responsive mt-5" th:if="${!tickets.isEmpty()}">
+			<table class="table table-striped table-hover">
 				<thead>
 					<tr>
 						<th>Titolo</th>
@@ -157,6 +115,7 @@
 						<th>Categoria</th>
 						<th></th>
 						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -164,25 +123,25 @@
 						<td th:text="${ticket.titolo}" class="align-middle"></td>
 						<td th:text="${ticket.descrizione}" class="align-middle"></td>
 						<td th:text="${ticket.stato}" class="align-middle"></td>
-						<td th:text="${ticket.dataCreazione}" class="align-middle"></td>
-						<td th:text="${ticket.dataModifica}" class="align-middle"></td>
+						<td th:text="${#temporals.format(ticket.dataCreazione, 'dd-MM-yyyy HH:mm')}" class="align-middle"></td>
+						<td th:text="${#temporals.format(ticket.dataModifica, 'dd-MM-yyyy HH:mm')}" class="align-middle"></td>
 						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>
 						<td th:text="${ticket.categoria.nome}"></td>
-						<td class="align-middle">
+						<td>
 							<a class="btn btn-primary" th:href="@{/tickets/{id}(id=${ticket.id})}">
-								<i class="fas fa-ticket"></i>
+								<i class="fas fa-ticket">Dettagli</i>
 							</a>
-							<a class="btn btn-success" th:href="@{|/tickets/edit/${ticket.id}|}"
-								sec:authorize="hasAuthority('ADMIN')">
-								<i class="fas fa-edit"></i>
-							</a>
+						</td>
+						<td>
+							<a th:href="@{|/tickets/edit/${ticket.id}|}" class="btn btn-success"
+								sec:authorize="hasAuthority('ADMIN')">Modifica<i class="fas fa-edit"></i></a>
 						</td>
 						<td class="align-middle">
 							<form id="delete-ticket" th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}"
 								method="post" style="display:inline-block;" sec:authorize="hasAuthority('ADMIN')">
 								<button class="btn btn-danger" type="submit" id="submitButton"
 									onclick="return confirm('Vuoi eliminare questo ticket?')">
-									<i class="fas fa-trash"></i>
+									<i class="fas fa-trash">Elimina</i>
 								</button>
 							</form>
 						</td>
@@ -191,18 +150,6 @@
 			</table>
 		</div>
 
-		<div th:if="${ticket != null}">
-			<!-- contenuto del ticket -->
-		</div>
-		<div th:if="${ticket == null}">
-			<p>Ticket non trovato.</p>
-		</div>
-
-		<div class="container">
-			<div class="content alert alert-primary text-center" role="alert" th:if="${tickets.isEmpty()}">
-				Non ci sono ticket
-			</div>
-		</div>
 	</div>
 
 

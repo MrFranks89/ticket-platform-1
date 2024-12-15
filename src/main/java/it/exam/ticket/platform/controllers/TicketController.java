@@ -101,7 +101,7 @@ public class TicketController {
 	}
 
 	@PostMapping("/create")
-	public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult,
+	public String store(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult bindingResult,
 			RedirectAttributes redirectAttributes) {
 		
 		if (bindingResult.hasErrors()) {
@@ -110,39 +110,39 @@ public class TicketController {
 			return "tickets/create";
 		}
 
-		if (formTicket.getDataCreazione() == null) {
-			formTicket.setDataCreazione(LocalDateTime.now());
+		if (ticket.getDataCreazione() == null) {
+			ticket.setDataCreazione(LocalDateTime.now());
 		}
 
 		LocalDateTime now = LocalDateTime.now();
-		formTicket.setDataCreazione(now);
-		formTicket.setDataModifica(now);
+		ticket.setDataCreazione(now);
+		ticket.setDataModifica(now);
 
-		if (formTicket.getStato() == null || formTicket.getStato().isEmpty()) {
-			formTicket.setStato("da fare");
+		if (ticket.getStato() == null || ticket.getStato().isEmpty()) {
+			ticket.setStato("da fare");
 		}
 
-		if (formTicket.getCategoria() == null) {
+		if (ticket.getCategoria() == null) {
 			bindingResult.rejectValue("categoria", "error.categoria", "La categoria non può essere vuota");
 			return "tickets/create";
 		}
 
-		if (formTicket.getCategoria() != null && formTicket.getCategoria().getId() != null) {
+		if (ticket.getCategoria() != null && ticket.getCategoria().getId() != null) {
 
-			Categoria categoria = categoriaRepo.findById(formTicket.getCategoria().getId())
+			Categoria categoria = categoriaRepo.findById(ticket.getCategoria().getId())
 					.orElseThrow(() -> new IllegalArgumentException("Categoria non trovata"));
 
-			formTicket.setCategoria(categoria);
+			ticket.setCategoria(categoria);
 		} else {
 			bindingResult.rejectValue("categoria", "error.categoria", "La categoria non può essere vuota");
 			return "tickets/create";
 		}
 
-		System.out.println(formTicket);
+		System.out.println(ticket);
 
-		ticketRepo.save(formTicket);
+		ticketRepo.save(ticket);
 
-		Operatori operatore = formTicket.getOperatore();
+		Operatori operatore = ticket.getOperatore();
 		operatoriRepo.save(operatore);
 
 		redirectAttributes.addFlashAttribute("successMessage", "Ticket creato con successo!");
@@ -232,9 +232,6 @@ public class TicketController {
 		newNota.setTicket(ticket);
 		newNota.setDataCreazione(LocalDate.now());
 
-		/*model.addAttribute("ticket", ticket);
-		model.addAttribute("nota", nota);
-		//model.addAttribute("ticketId", id);*/
 		
 		 model.addAttribute("ticket", ticket);
 		    model.addAttribute("note", ticket.getNote());
@@ -243,14 +240,4 @@ public class TicketController {
 		return "note/create";
 	}
 
-	/*@GetMapping("/{id}/nota")
-	public String creaNota(@PathVariable Long id, Model model) {
-		Ticket ticket = ticketRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-		Nota nota = new Nota();
-		nota.setTicket(ticket);
-		nota.setDataCreazione(LocalDate.now());
-
-		model.addAttribute("nota", nota);
-		return "note/create";
-	}*/
 }

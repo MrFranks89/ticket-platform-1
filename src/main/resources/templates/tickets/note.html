@@ -82,7 +82,7 @@
                 <li th:each="nota : ${ticket.note}">
                     <strong th:text="${nota.titolo}"></strong>
                     <p th:text="${nota.testo}"></p>
-                    <small th:text="${#temporals.format(nota.dataCreazione, 'dd-MM-yyyy')}"></small>
+                    <small th:text="${#temporals.format(nota.dataCreazione, 'dd-MM-yyyy HH:mm' )}"></small>
                 </li>
             </ul>
         </div>

@@ -1,6 +1,7 @@
 package it.exam.ticket.platform.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,5 @@ public interface OperatoriRepository extends JpaRepository<Operatori, Long> {
 	public List<Operatori> findByAttivo(boolean attivo);
 	 public List<Operatori> findAll();
 	 public List<Operatori> findByUsername(String username);
+	 public Optional<Operatori> findOneByUsername(String username);
 }

@@ -8,8 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import it.exam.ticket.platform.model.Admin;
+import it.exam.ticket.platform.model.Operatori;
 import it.exam.ticket.platform.model.Roles;
-import it.exam.ticket.platform.model.User;
 
 public class DatabaseUserDetails implements UserDetails {
 	
@@ -18,13 +19,23 @@ public class DatabaseUserDetails implements UserDetails {
 	private final String password;
 	private final Set<GrantedAuthority> authorities;
 	
-	public DatabaseUserDetails(User user) {
-		this.id = user.getId();
-		this.username = user.getUsername();
-		this.password = user.getPassword();
+	public DatabaseUserDetails(Operatori operatore) {
+		this.id = operatore.getId();
+		this.username = operatore.getUsername();
+		this.password = operatore.getPassword();
 		
 		authorities = new HashSet<GrantedAuthority>();
-		for (Roles role : user.getRoles()) {
+		for (Roles role : operatore.getRoles()) {
+			authorities.add(new SimpleGrantedAuthority(role.getName()));
+		}
+	}
+	
+	public DatabaseUserDetails(Admin admin) {
+		this.id = admin.getId();
+		this.username = admin.getUsername();
+		this.password = admin.getPassword();
+		authorities = new HashSet<GrantedAuthority>();
+		for (Roles role : admin.getRoles()) {
 			authorities.add(new SimpleGrantedAuthority(role.getName()));
 		}
 	}

@@ -7,27 +7,34 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import it.exam.ticket.platform.model.User;
-import it.exam.ticket.platform.repository.UserRepository;
+import it.exam.ticket.platform.model.Admin;
+import it.exam.ticket.platform.model.Operatori;
+import it.exam.ticket.platform.repository.AdminRepository;
+import it.exam.ticket.platform.repository.OperatoriRepository;
+
 
 public class DatabaseUserDetailsService implements UserDetailsService{
 
 	@Autowired
-	private UserRepository userRepo;
+	private OperatoriRepository operatoriRepo;
 	
+	@Autowired
+	private AdminRepository adminRepo;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<User> userByUsername = userRepo.findByUsername(username);
-		
-		if(userByUsername.isPresent()) {
-			return new DatabaseUserDetails(userByUsername.get());
-		} else {
-			throw new UsernameNotFoundException("Username not found");
+		Optional<Admin> adminByUsername = adminRepo.findByUsername(username);
+		if(adminByUsername.isPresent()) {
+			return new DatabaseUserDetails(adminByUsername.get());
 		}
+		
+		Optional<Operatori> userByUsername = operatoriRepo.findOneByUsername(username);
+		if (userByUsername.isPresent()) {
+			return new DatabaseUserDetails(userByUsername.get());}
+		else {
+			throw new UsernameNotFoundException("Operatore non trovato");
+		}
+	}
 		
 	}
 	
-	
-
-}

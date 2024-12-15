@@ -82,6 +82,6 @@ public class NoteController {
 		noteRepo.delete(nota);
 		
 		redirectAttributes.addFlashAttribute("successMessage", "Nota eliminata con successo!");
-		return "redirect:/ticket/" + nota.getTicket().getId();
+		return "redirect:/tickets/" + nota.getTicket().getId();
 	}
 }

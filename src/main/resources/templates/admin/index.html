@@ -106,9 +106,9 @@
 				<div class="col-md-6 text-center">
 					<a href="/operatori" class="btn btn-primary btn-lg mt-3">Gestisci Operatori</a>
 				</div>
-
 			</div>
 		</div>
+		<hr>
 
 		<form th:action="@{/tickets}" method="get" class="d-flex mb-4">
 			<input name="keyword" th:value="${keyword}" class="form-control me-2" type="search"
@@ -133,12 +133,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="ticket : ${tickets}">
-						<td th:text="${ticket.titolo}"></td>
-						<td th:text="${ticket.descrizione}"></td>
-						<td th:text="${ticket.stato}"></td>
-						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"></td>
-						<td th:text="${ticket.categoria.nome}"></td>
+					<tr th:each="ticket : ${tickets}" style="vertical-align: middle;">
+						<td th:text="${ticket.titolo}" class="align-middle"></td>
+						<td th:text="${ticket.descrizione}" class="align-middle"></td>
+						<td th:text="${ticket.stato}" class="align-middle"></td>
+						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}" class="align-middle"></td>
+						<td th:text="${ticket.categoria.nome}" class="align-middle"></td>
 						<td>
 							<a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli<i
 									class="fas fa-ticket"></i></a>
@@ -164,9 +164,11 @@
 			<h2>Operatori</h2>
 			<table class="table table-striped">
 				<thead>
-					<tr>
-						<th>ID</th>
+					<tr style="vertical-align: middle;">
+						<th >ID</th>
 						<th>Nome</th>
+						<th>Cognome</th>
+						<th>Username</th>
 						<th>Email</th>
 						<th>Ticket Assegnati</th>
 						<th>Azioni</th>
@@ -174,14 +176,14 @@
 				</thead>
 				<tbody>
 					<tr th:each="operatore : ${operatori}">
-						<td th:text="${operatore.id}"></td>
-						<td th:text="${operatore.nome}"></td>
-						<td th:text="${operatore.email}"></td>
-						<td th:text="${operatore.ticket.size()}"></td>
+						<td th:text="${operatore.id}" class="align-middle"></td>
+						<td th:text="${operatore.nome}" class="align-middle"></td>
+						<td th:text="${operatore.cognome}" class="align-middle"></td>
+						<td th:text="${operatore.username}" class="align-middle"></td>
+						<td th:text="${operatore.email}" class="align-middle"></td>
+						<td th:text="${operatore.ticket.size()}" class="align-middle"></td>
 						<td>
 							<a th:href="@{/operatori/{id}(id=${operatore.id})}" class="btn btn-info btn-sm">Dettagli</a>
-							<a th:href="@{/operatori/edit/{id}(id=${operatore.id})}"
-								class="btn btn-warning btn-sm">Modifica</a>
 						</td>
 					</tr>
 				</tbody>
