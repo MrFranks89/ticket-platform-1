@@ -1,5 +1,6 @@
 package it.exam.ticket.platform.controllers;
 
+import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,6 +28,7 @@ import it.exam.ticket.platform.repository.CategoriaRepository;
 import it.exam.ticket.platform.repository.NoteRepository;
 import it.exam.ticket.platform.repository.OperatoriRepository;
 import it.exam.ticket.platform.repository.TicketRepository;
+import it.exam.ticket.platform.security.DatabaseUserDetails;
 import it.exam.ticket.platform.model.Categoria;
 import jakarta.validation.Valid;
 
@@ -85,6 +87,7 @@ public class TicketController {
 
 	}
 
+
 	@GetMapping("/create")
 	public String create(Model model) {
 
@@ -100,6 +103,7 @@ public class TicketController {
 	@PostMapping("/create")
 	public String store(@Valid @ModelAttribute("ticket") Ticket formTicket, BindingResult bindingResult,
 			RedirectAttributes redirectAttributes) {
+		
 		if (bindingResult.hasErrors()) {
 
 			bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
@@ -148,6 +152,9 @@ public class TicketController {
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable Long id, Model model) {
 
+		Ticket ticket = ticketRepo.findById(id)
+		        .orElseThrow(() -> new RuntimeException("Ticket non trovato"));
+		    
 		model.addAttribute("ticket", ticketRepo.findById(id).get());
 		model.addAttribute("allOperatori", operatoriRepo.findAll());
 		model.addAttribute("allCategorie", categoriaRepo.findAll());
@@ -155,16 +162,19 @@ public class TicketController {
 		return "tickets/edit";
 	}
 
+
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id, @Valid @ModelAttribute("ticket") Ticket formTicket,
 			BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
+	    Ticket ticket = ticketRepo.findById(id)
+	        .orElseThrow(() -> new RuntimeException("Ticket non trovato"));
+
+		
 		if (bindingResult.hasErrors()) {
 			return "ticket/edit";
 		}
 
-		Ticket ticket = ticketRepo.findById(id).orElseThrow();
-		new RuntimeException("Ticket non trovato");
 
 		if (!formTicket.getTitolo().equals(ticket.getTitolo())) {
 			bindingResult.addError(new ObjectError("Titolo", "Il titolo non può essere cambiato"));
@@ -216,19 +226,24 @@ public class TicketController {
 	public String nota(@PathVariable Long id, Model model) {
 
 		Ticket ticket = ticketRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
+		
+		Nota newNota = new Nota();
 
-		Nota nota = new Nota();
+		newNota.setTicket(ticket);
+		newNota.setDataCreazione(LocalDate.now());
 
-		nota.setTicket(ticket);
-		nota.setDataCreazione(LocalDate.now());
-
+		/*model.addAttribute("ticket", ticket);
 		model.addAttribute("nota", nota);
-		model.addAttribute("ticketId", id);
+		//model.addAttribute("ticketId", id);*/
+		
+		 model.addAttribute("ticket", ticket);
+		    model.addAttribute("note", ticket.getNote());
+		    model.addAttribute("newNota", new Nota());
 
-		return "note/edit";
+		return "note/create";
 	}
 
-	@GetMapping("/{id}/nota")
+	/*@GetMapping("/{id}/nota")
 	public String creaNota(@PathVariable Long id, Model model) {
 		Ticket ticket = ticketRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
 		Nota nota = new Nota();
@@ -237,5 +252,5 @@ public class TicketController {
 
 		model.addAttribute("nota", nota);
 		return "note/create";
-	}
+	}*/
 }

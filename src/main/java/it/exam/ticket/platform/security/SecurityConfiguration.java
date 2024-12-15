@@ -24,6 +24,9 @@ public class SecurityConfiguration {
             .requestMatchers("/note", "/note/**").hasAnyAuthority("USER", "ADMIN")
             .requestMatchers("/**").permitAll() // 
 
+            
+            
+            
             .and().formLogin()
                 .defaultSuccessUrl("/tickets", true)
             .and().logout()

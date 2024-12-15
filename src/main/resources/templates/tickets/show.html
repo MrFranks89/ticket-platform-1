@@ -158,10 +158,8 @@
 							<hr />
 						</div>
 
-						<form th:action="@{/note/create}" method="post">
-							<input type="hidden" name="ticketId" th:value="${ticket.id}">
-							<button type="submit" class="btn btn-primary mt-3">Aggiungi Nota</button>
-						</form>
+						<a th:href="@{/note/create(ticketId=${ticket.id})}" class="btn btn-primary">Aggiungi Nota</a>
+
 					</div>
 
 					<div class="d-flex justify-content-between mt-4">

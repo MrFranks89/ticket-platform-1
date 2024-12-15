@@ -10,4 +10,5 @@ public interface OperatoriRepository extends JpaRepository<Operatori, Long> {
 
 	public List<Operatori> findByAttivo(boolean attivo);
 	 public List<Operatori> findAll();
+	 public List<Operatori> findByUsername(String username);
 }

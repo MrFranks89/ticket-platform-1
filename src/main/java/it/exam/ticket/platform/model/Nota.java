@@ -28,13 +28,17 @@ public class Nota {
 
 	@NotNull(message = "La nota deve avere un titolo")
 	private String titolo;
-	
+
 	private String testo;
 
-	@ManyToOne (fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ticket_id", nullable = false)
 	@JsonBackReference
 	private Ticket ticket;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "operatore_id")
+	private Operatori operatore;
 
 	private boolean valid = true;
 
@@ -86,4 +90,13 @@ public class Nota {
 		this.ticket = ticket;
 	}
 
+	public Operatori getOperatore() {
+		return operatore;
+	}
+
+	public void setOperatore(Operatori operatore) {
+		this.operatore = operatore;
+	}
+
+	
 }

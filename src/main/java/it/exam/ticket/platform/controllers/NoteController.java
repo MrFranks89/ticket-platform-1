@@ -1,6 +1,7 @@
 package it.exam.ticket.platform.controllers;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,12 +13,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import it.exam.ticket.platform.model.Nota;
+import it.exam.ticket.platform.model.Operatori;
 import it.exam.ticket.platform.model.Ticket;
 import it.exam.ticket.platform.repository.NoteRepository;
+import it.exam.ticket.platform.repository.OperatoriRepository;
 import it.exam.ticket.platform.repository.TicketRepository;
 import jakarta.validation.Valid;
 
@@ -26,59 +31,57 @@ import jakarta.validation.Valid;
 public class NoteController {
 
 	@Autowired
-	private NoteRepository noteRepository;
+	private NoteRepository noteRepo;
 
 	@Autowired
-	private TicketRepository ticketRepository;
+	private TicketRepository ticketRepo;
+	
+	@Autowired
+	private OperatoriRepository operatoriRepo;
 
+	
 	@GetMapping("/create")
-	public String creaNota(@RequestParam(required = false) Long ticketId, Model model) {
-		Nota nuovaNota = new Nota();
-		if (ticketId != null) {
-			Ticket ticket = ticketRepository.findById(ticketId)
-					.orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-			nuovaNota.setTicket(ticket);
-		}
-		model.addAttribute("nota", nuovaNota);
-		model.addAttribute("ticketId", ticketId);
-		return "note/create";
-	}
+    public String showCreateForm(@RequestParam("ticketId") Long ticketId, Model model) {
+        Ticket ticket = ticketRepo.findById(ticketId)
+                .orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
+
+        List<Operatori> allOperatori = operatoriRepo.findAll();
+        model.addAttribute("allOperatori", allOperatori);
+        Nota newNota = new Nota();
+        newNota.setTicket(ticket);
+        newNota.setDataCreazione(LocalDate.now());
+
+        model.addAttribute("ticket", ticket);
+        model.addAttribute("newNota", newNota);
+
+        return "tickets/note";
+    }
 
 	@PostMapping("/create")
-	public String creaNota(@Valid @ModelAttribute("nota") Nota nota, BindingResult bindingResult,
-			@RequestParam(required = false) Long ticketId, Model model) {
-		
+    public String createNota(@ModelAttribute Nota nota, @RequestParam Long ticketId, RedirectAttributes redirectAttributes) {
+        
+		System.out.println("Titolo: " + nota.getTitolo());
+	    System.out.println("Testo: " + nota.getTesto());
+	    System.out.println("Ticket ID: " + ticketId);
+		Ticket ticket = ticketRepo.findById(ticketId)
+                .orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
 
-		if (bindingResult.hasErrors()) {
-		    model.addAttribute("ticket", ticketRepository.findAll());
-		    return "note/create";
-		}
-		
-		if (ticketId != null) {
-	        Ticket ticket = ticketRepository.findById(ticketId)
-	            .orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-	        nota.setTicket(ticket);
-	    } else if (nota.getTicket() == null) {
-	    	
-	        model.addAttribute("error", "È necessario associare la nota a un ticket");
-	        model.addAttribute("ticket", ticketRepository.findAll());
-	        return "note/create";
-	    }
+        nota.setTicket(ticket);
+        nota.setDataCreazione(LocalDate.now());
+        noteRepo.save(nota);
 
-		if (nota.getDataCreazione() == null) {
-	        nota.setDataCreazione(LocalDate.now());
-	    }
-		
-		System.out.println("TicketId ricevuto: " + ticketId);
-		System.out.println("Nota ricevuta: " + nota);
-		noteRepository.save(nota);
-		return "redirect:/tickets/{id}" + nota.getTicket().getId();
-	}
+        redirectAttributes.addFlashAttribute("successMessage", "Nota aggiunta con successo!");
+        return "redirect:/tickets/" + ticketId;
+    }
 
 	@PostMapping("/delete/{id}")
-	public String deleteNota(@PathVariable Long id) {
-		Nota nota = noteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Nota non trovata"));
-		noteRepository.delete(nota);
-		return "redirect:/ticket/show/" + nota.getTicket().getId();
+	public String deleteNota(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+		Nota nota = noteRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Nota non trovata"));
+		
+		Long ticketId = nota.getTicket().getId();
+		noteRepo.delete(nota);
+		
+		redirectAttributes.addFlashAttribute("successMessage", "Nota eliminata con successo!");
+		return "redirect:/ticket/" + nota.getTicket().getId();
 	}
 }
