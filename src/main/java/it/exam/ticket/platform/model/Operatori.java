@@ -77,9 +77,9 @@ public class Operatori {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	
 	public boolean isAttivo() {
-		return ticket.stream().noneMatch(t -> !"completato".equals(t.getStato()));
+		return attivo;
 	}
 
 	public void setAttivo(boolean attivo) {

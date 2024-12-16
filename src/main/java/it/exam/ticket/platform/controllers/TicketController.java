@@ -131,11 +131,6 @@ public class TicketController {
 			ticket.setStato("da fare");
 		}
 
-		if (ticket.getCategoria() == null) {
-			bindingResult.rejectValue("categoria", "error.categoria", "La categoria non può essere vuota");
-			return "tickets/create";
-		}
-
 		if (ticket.getCategoria() != null && ticket.getCategoria().getId() != null) {
 
 			Categoria categoria = categoriaRepo.findById(ticket.getCategoria().getId())
@@ -217,21 +212,6 @@ public class TicketController {
 		return "redirect:/tickets/{id}";
 	}
 	
-	@PostMapping("/tickets/updateStatus/{ticketId}")
-	public String updateOperatoreStatus(@PathVariable Long ticketId, @RequestParam String stato, Model model) {
-
-		
-		Ticket ticket = ticketRepo.findById(ticketId)
-				.orElseThrow(() -> new IllegalArgumentException("Ticket non trovato: " + ticketId));
-	    
-	    Operatori operatore = ticket.getOperatore();
-	    if (operatore != null) {
-	        operatore.setAttivo("Attivo".equals(stato));
-	        operatoriRepo.save(operatore);
-	    }
-
-	    return "redirect:/tickets";
-	}
 
 	@PostMapping("/delete/{id}")
 	public String deleteTicket(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {

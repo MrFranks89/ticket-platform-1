@@ -51,17 +51,20 @@ public class OperatoriController {
 	public String showOperatore(@PathVariable Long id, Model model) {
 		Operatori operatori = operatoriRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
-		model.addAttribute("operatore", operatori);
-
+		
+		
+		
 		List<Ticket> assignedTickets = ticketRepo.findByOperatoreId(id);
-		model.addAttribute("assignedTickets", assignedTickets);
-
+		
 		boolean isAttivo = assignedTickets.isEmpty();
 	    operatori.setAttivo(isAttivo);
+	    
+		model.addAttribute("operatore", operatori);
+		model.addAttribute("assignedTickets", assignedTickets);
 		
 	    List<String> statiOperatore = Arrays.asList("Attivo", "Non attivo");
 	    model.addAttribute("statiOperatore", statiOperatore);
-	    
+
 		return "operatori/show";
 	}
 	
@@ -100,16 +103,12 @@ public class OperatoriController {
 	
 	@PostMapping("/updateStato/{id}")
 	public String updateOperatoreStato(@PathVariable Long id, @RequestParam String stato, RedirectAttributes redirectAttributes) {
-		System.out.println("ID Operatore: " + id);
-	    System.out.println("Stato ricevuto: " + stato);
 		
 		Operatori operatore = operatoriRepository.findById(id)
 	            .orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
 
-
-	    operatore.setAttivo(stato.equals("Attivo"));
-	    operatoriRepository.save(operatore);
-
+		operatore.setAttivo(stato.equals("attivo"));
+		operatoriRepository.save(operatore);
 	    redirectAttributes.addFlashAttribute("message", "Stato dell'operatore aggiornato con successo!");
 	    return "redirect:/operatori/{id}";
 	}

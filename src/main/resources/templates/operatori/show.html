@@ -5,7 +5,6 @@
 	<div th:replace="~{fragments :: head}"></div>
 	<title>Dettagli Operatore</title>
 	<style>
-
 		.card {
 			border: none;
 			border-radius: 15px;
@@ -126,6 +125,14 @@
 				<p><strong>Email:</strong> <span th:text="${operatore.email}"></span></p>
 				<p><strong>Stato disponibilità:</strong> <span
 						th:text="${operatore.attivo ? 'Attivo' : 'Non attivo'}"></span></p>
+				<form th:action="@{/operatori/updateStato/{id}(id=${operatore.id})}" method="post" class="mt-2">
+					<label for="statoOperatore">Cambia Stato Operatore:</label>
+					<select id="statoOperatore" name="stato" class="form-select">
+						<option th:value="true" th:text="'Attivo'" th:selected="${operatore.attivo}"></option>
+						<option th:value="false" th:text="'Non Attivo'" th:selected="${!operatore.attivo}"></option>
+					</select>
+					<button class="btn btn-primary mt-2" type="submit">Aggiorna Stato Operatore</button>
+				</form>
 			</div>
 		</div>
 

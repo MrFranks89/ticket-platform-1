@@ -130,7 +130,6 @@
 			<label for="operatore">Operatore Assegnato</label>
 			<select id="operatore" name="operatore" th:field="*{operatore}">
 				<option value="">Seleziona un operatore</option>
-				<!-- Lista dinamica degli operatori -->
 				<option th:each="operatore : ${allOperatori}" th:value="${operatore.id}" th:text="${operatore.username}"
 					required>
 				</option>

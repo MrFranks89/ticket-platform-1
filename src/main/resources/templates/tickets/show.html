@@ -45,14 +45,9 @@
 						<strong>Nome Operatore:</strong> <span th:text="${ticket.operatore.nome}"></span><br>
 						<strong>Email Operatore:</strong> <span th:text="${ticket.operatore.email}"></span>
 					</p>
-					<form th:action="@{'/operatori/updateStato/{id}'(id=${ticket.operatore.id})}" method="post"
-						class="mt-2">
-						<label for="statoOperatore">Cambia Stato Operatore:</label>
-						<select id="statoOperatore" name="statoOperatore" class="form-select">
-							<option th:each="statoOperatore : ${statiOperatore}" th:value="${statoOperatore}" th:text="${statoOperatore}"></option>
-						</select>
-						<button class="btn btn-primary mt-2" type="submit">Aggiorna Stato Operatore</button>
-					</form>
+					<p><strong>Stato disponibilità:</strong> <span
+							th:text="${operatore.attivo ? 'Attivo' : 'Non attivo'}"></span></p>
+
 					<p th:if="${ticket.operatore == null}">Nessun operatore assegnato.</p>
 				</div>
 			</div>

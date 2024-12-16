@@ -130,6 +130,7 @@
 						<th></th>
 						<th></th>
 						<th></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -137,7 +138,8 @@
 						<td th:text="${ticket.titolo}" class="align-middle"></td>
 						<td th:text="${ticket.descrizione}" class="align-middle"></td>
 						<td th:text="${ticket.stato}" class="align-middle"></td>
-						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}" class="align-middle"></td>
+						<td th:text="${ticket.operatore != null ? ticket.operatore.username : 'Non assegnato'}"
+							class="align-middle"></td>
 						<td th:text="${ticket.categoria.nome}" class="align-middle"></td>
 						<td>
 							<a th:href="@{/tickets/{id}(id=${ticket.id})}" class="btn btn-primary">Dettagli<i
@@ -146,7 +148,15 @@
 						<td>
 							<a th:href="@{|/tickets/edit/${ticket.id}|}" class="btn btn-success">Modifica<i
 									class="fas fa-edit"></i></a>
+						</td>
+
 						<td>
+							<a th:href="@{/note/create(ticketId=${ticket.id})}" class="btn btn-primary">Aggiungi
+								Nota</a>
+						</td>
+						<td>
+
+
 							<form th:action="@{'/tickets/delete/{id}'(id=${ticket.id})}" method="post"
 								style="display:inline-block;">
 								<button class="btn btn-danger" type="submit"
@@ -165,7 +175,7 @@
 			<table class="table table-striped">
 				<thead>
 					<tr style="vertical-align: middle;">
-						<th >ID</th>
+						<th>ID</th>
 						<th>Nome</th>
 						<th>Cognome</th>
 						<th>Username</th>

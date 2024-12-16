@@ -118,8 +118,7 @@
 			<div class="form-group">
 				<label for="operatori">Seleziona gli operatori:</label>
 				<select id="operatore" name="operatore" th:field="*{operatore}" class="form-select">
-					<option th:each="operatore : ${allOperatori}" th:value="${operatore.id}" th:if="${operatore.attivo}"
-						th:text="${operatore.username}">
+					<option th:each="operatore : ${allOperatori}" th:value="${operatore.id}" th:text="${operatore.username}">
 					</option>
 				</select>
 			</div>

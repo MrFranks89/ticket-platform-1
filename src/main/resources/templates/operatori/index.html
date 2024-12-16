@@ -93,7 +93,6 @@
 					th:object="${ope}">
 					<h3 class="text-center mb-4">Aggiungi Nuovo Operatore</h3>
 
-					<!-- Nome -->
 					<div class="form-group mb-3">
 						<label for="nome" class="form-label">Nome</label>
 						<div class="input-group">
@@ -103,7 +102,6 @@
 						</div>
 					</div>
 
-					<!-- Cognome -->
 					<div class="form-group mb-3">
 						<label for="cognome" class="form-label">Cognome</label>
 						<div class="input-group">
@@ -113,7 +111,6 @@
 						</div>
 					</div>
 
-					<!-- Username -->
 					<div class="form-group mb-3">
 						<label for="username" class="form-label">Username</label>
 						<div class="input-group">
@@ -123,7 +120,6 @@
 						</div>
 					</div>
 
-					<!-- Email -->
 					<div class="form-group mb-3">
 						<label for="email" class="form-label">Email</label>
 						<div class="input-group">
@@ -133,7 +129,6 @@
 						</div>
 					</div>
 
-					<!-- Password -->
 					<div class="form-group mb-3">
 						<label for="password" class="form-label">Password</label>
 						<div class="input-group">
@@ -143,7 +138,6 @@
 						</div>
 					</div>
 
-					<!-- Submit Button -->
 					<div class="form-group text-center mt-4">
 						<button class="btn btn-primary btn-lg" type="submit">
 							<i class="fas fa-plus"></i> Aggiungi
@@ -151,7 +145,6 @@
 					</div>
 				</form>
 
-				<!-- Error Messages -->
 				<div th:if="${#fields.hasErrors('operatori')}" class="invalid-feedback">
 					<ul>
 						<li th:each="err : ${#fields.errors('operatori')}" th:text="${err}"></li>
@@ -170,7 +163,7 @@
 							<th>Cognome</th>
 							<th>Username</th>
 							<th>N° Ticket</th>
-							<th></th>
+							<th>Stato Disponibilità</th>
 							<th></th>
 							<th></th>
 
@@ -184,6 +177,7 @@
 							<td th:text="${operatori.cognome}" class="align-middle"></td>
 							<td th:text="${operatori.username}" class="align-middle"></td>
 							<td th:text="${operatori.ticket.size()}" class="align-middle"></td>
+							<td th:text="${operatori.attivo ? 'Attivo' : 'Non attivo'}"></td>
 							<td>
 
 								<a th:href="@{/operatori/{id}(id=${operatori.id})}" class="btn btn-primary">
