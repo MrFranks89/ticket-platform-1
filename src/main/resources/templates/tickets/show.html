@@ -30,9 +30,9 @@
 
 				<div>
 					<form th:action="@{'/tickets/updateStatus/{id}'(id=${ticket.id})}" method="post">
-						<label for="status">Cambia Stato:</label>
-						<select id="status" name="status" class="form-select">
-							<option th:each="status : ${statuses}" th:value="${status}" th:text="${status}"></option>
+						<label for="stato">Cambia Stato:</label>
+						<select id="stato" name="stato" class="form-select">
+							<option th:each="stato : ${statiTicket}" th:value="${stato}" th:text="${stato}"></option>
 						</select>
 						<button class="btn btn-primary mt-2" type="submit">Aggiorna Stato</button>
 					</form>
@@ -45,6 +45,14 @@
 						<strong>Nome Operatore:</strong> <span th:text="${ticket.operatore.nome}"></span><br>
 						<strong>Email Operatore:</strong> <span th:text="${ticket.operatore.email}"></span>
 					</p>
+					<form th:action="@{'/operatori/updateStato/{id}'(id=${ticket.operatore.id})}" method="post"
+						class="mt-2">
+						<label for="statoOperatore">Cambia Stato Operatore:</label>
+						<select id="statoOperatore" name="statoOperatore" class="form-select">
+							<option th:each="statoOperatore : ${statiOperatore}" th:value="${statoOperatore}" th:text="${statoOperatore}"></option>
+						</select>
+						<button class="btn btn-primary mt-2" type="submit">Aggiorna Stato Operatore</button>
+					</form>
 					<p th:if="${ticket.operatore == null}">Nessun operatore assegnato.</p>
 				</div>
 			</div>

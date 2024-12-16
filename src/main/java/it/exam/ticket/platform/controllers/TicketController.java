@@ -3,6 +3,7 @@ package it.exam.ticket.platform.controllers;
 import org.springframework.security.access.AccessDeniedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,11 +75,19 @@ public class TicketController {
 
 	@GetMapping("/{id}")
 	public String show(@PathVariable(name = "id") Long id, Model model) {
-
 		Optional<Ticket> ticketOptional = ticketRepo.findById(id);
 
 		if (ticketOptional.isPresent()) {
-			model.addAttribute("ticket", ticketOptional.get());
+			Ticket ticket = ticketOptional.get();
+	        model.addAttribute("ticket", ticket);
+	        
+			if (ticket.getOperatore() != null) {
+	            model.addAttribute("operatore", ticket.getOperatore());
+	        }
+			
+			List<String> statiTicket = Arrays.asList("Da Fare", "In corso", "Completato");
+	        model.addAttribute("statiTicket", statiTicket);
+	        
 			return "tickets/show";
 		} else {
 			model.addAttribute("errorMessage", "Ticket non trovato");
@@ -206,6 +215,22 @@ public class TicketController {
 		redirectAttributes.addFlashAttribute("successMessage", "Ticket Modificato!");
 
 		return "redirect:/tickets/{id}";
+	}
+	
+	@PostMapping("/tickets/updateStatus/{ticketId}")
+	public String updateOperatoreStatus(@PathVariable Long ticketId, @RequestParam String stato, Model model) {
+
+		
+		Ticket ticket = ticketRepo.findById(ticketId)
+				.orElseThrow(() -> new IllegalArgumentException("Ticket non trovato: " + ticketId));
+	    
+	    Operatori operatore = ticket.getOperatore();
+	    if (operatore != null) {
+	        operatore.setAttivo("Attivo".equals(stato));
+	        operatoriRepo.save(operatore);
+	    }
+
+	    return "redirect:/tickets";
 	}
 
 	@PostMapping("/delete/{id}")

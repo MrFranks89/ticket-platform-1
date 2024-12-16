@@ -1,6 +1,7 @@
 package it.exam.ticket.platform.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +51,17 @@ public class OperatoriController {
 	public String showOperatore(@PathVariable Long id, Model model) {
 		Operatori operatori = operatoriRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
-		model.addAttribute("operatori", operatori);
+		model.addAttribute("operatore", operatori);
 
 		List<Ticket> assignedTickets = ticketRepo.findByOperatoreId(id);
 		model.addAttribute("assignedTickets", assignedTickets);
 
+		boolean isAttivo = assignedTickets.isEmpty();
+	    operatori.setAttivo(isAttivo);
+		
+	    List<String> statiOperatore = Arrays.asList("Attivo", "Non attivo");
+	    model.addAttribute("statiOperatore", statiOperatore);
+	    
 		return "operatori/show";
 	}
 	
@@ -70,8 +77,6 @@ public class OperatoriController {
 
 	    return "redirect:/operatori/{id}";
 	}
-
-
 
 
 	@PostMapping("/create")
@@ -91,6 +96,22 @@ public class OperatoriController {
 		operatoriRepository.save(operatori);
 
 		return "redirect:/operatori";
+	}
+	
+	@PostMapping("/updateStato/{id}")
+	public String updateOperatoreStato(@PathVariable Long id, @RequestParam String stato, RedirectAttributes redirectAttributes) {
+		System.out.println("ID Operatore: " + id);
+	    System.out.println("Stato ricevuto: " + stato);
+		
+		Operatori operatore = operatoriRepository.findById(id)
+	            .orElseThrow(() -> new EntityNotFoundException("Operatore non trovato con id: " + id));
+
+
+	    operatore.setAttivo(stato.equals("Attivo"));
+	    operatoriRepository.save(operatore);
+
+	    redirectAttributes.addFlashAttribute("message", "Stato dell'operatore aggiornato con successo!");
+	    return "redirect:/operatori/{id}";
 	}
 
 	@PostMapping("/delete/{id}")

@@ -113,13 +113,6 @@
 	</style>
 </head>
 
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Dettagli Operatore</title>
-	<link rel="stylesheet" href="/css/styles.css">
-</head>
-
 <body>
 	<nav th:replace="~{navbar :: navbar('operatore')}"> </nav>
 	<div class="container">
@@ -128,11 +121,11 @@
 				<h2>Informazioni Operatore</h2>
 			</div>
 			<div class="card-body">
-				<p><strong>Nome:</strong> <span th:text="${operatori.nome}"></span></p>
-				<p><strong>Cognome:</strong> <span th:text="${operatori.cognome}"></span></p>
-				<p><strong>Email:</strong> <span th:text="${operatori.email}"></span></p>
+				<p><strong>Nome:</strong> <span th:text="${operatore.nome}"></span></p>
+				<p><strong>Cognome:</strong> <span th:text="${operatore.cognome}"></span></p>
+				<p><strong>Email:</strong> <span th:text="${operatore.email}"></span></p>
 				<p><strong>Stato disponibilità:</strong> <span
-						th:text="${operatori.attivo ? 'Attivo' : 'Non attivo'}"></span></p>
+						th:text="${operatore.attivo ? 'Attivo' : 'Non attivo'}"></span></p>
 			</div>
 		</div>
 

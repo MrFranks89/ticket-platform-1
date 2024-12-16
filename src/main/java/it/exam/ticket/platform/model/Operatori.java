@@ -27,7 +27,6 @@ public class Operatori {
 	private String email;
 
 	private String password;
-	
 
 	private boolean attivo;
 
@@ -97,8 +96,6 @@ public class Operatori {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private List<Roles> roles;
-	
-	
 
 	public List<Roles> getRoles() {
 		return roles;
