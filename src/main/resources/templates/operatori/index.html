@@ -186,7 +186,7 @@
 							</td>
 							<td>
 								<form th:action="@{|/operatori/delete/${operatori.id}|}" method="post" class="col-md-8"
-									id="delete-form" th:object="${ope}">
+									id="delete-form" th:object="${ope}" sec:authorize="hasAuthority('ADMIN')>
 									<button class="btn btn-danger" type="submit" id="submitButton"
 										onclick="return confirm('Sei sicuro?')"><i class="fas fa-trash"></i></button>
 								</form>

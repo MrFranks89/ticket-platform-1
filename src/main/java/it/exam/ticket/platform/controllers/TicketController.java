@@ -79,15 +79,15 @@ public class TicketController {
 
 		if (ticketOptional.isPresent()) {
 			Ticket ticket = ticketOptional.get();
-	        model.addAttribute("ticket", ticket);
-	        
+			model.addAttribute("ticket", ticket);
+
 			if (ticket.getOperatore() != null) {
-	            model.addAttribute("operatore", ticket.getOperatore());
-	        }
-			
+				model.addAttribute("operatore", ticket.getOperatore());
+			}
+
 			List<String> statiTicket = Arrays.asList("Da Fare", "In corso", "Completato");
-	        model.addAttribute("statiTicket", statiTicket);
-	        
+			model.addAttribute("statiTicket", statiTicket);
+
 			return "tickets/show";
 		} else {
 			model.addAttribute("errorMessage", "Ticket non trovato");
@@ -95,7 +95,6 @@ public class TicketController {
 		}
 
 	}
-
 
 	@GetMapping("/create")
 	public String create(Model model) {
@@ -112,7 +111,7 @@ public class TicketController {
 	@PostMapping("/create")
 	public String store(@Valid @ModelAttribute("ticket") Ticket ticket, BindingResult bindingResult,
 			RedirectAttributes redirectAttributes) {
-		
+
 		if (bindingResult.hasErrors()) {
 
 			bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
@@ -156,9 +155,8 @@ public class TicketController {
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable Long id, Model model) {
 
-		Ticket ticket = ticketRepo.findById(id)
-		        .orElseThrow(() -> new RuntimeException("Ticket non trovato"));
-		    
+		Ticket ticket = ticketRepo.findById(id).orElseThrow(() -> new RuntimeException("Ticket non trovato"));
+
 		model.addAttribute("ticket", ticketRepo.findById(id).get());
 		model.addAttribute("allOperatori", operatoriRepo.findAll());
 		model.addAttribute("allCategorie", categoriaRepo.findAll());
@@ -166,19 +164,15 @@ public class TicketController {
 		return "tickets/edit";
 	}
 
-
 	@PostMapping("/edit/{id}")
 	public String update(@PathVariable Long id, @Valid @ModelAttribute("ticket") Ticket formTicket,
 			BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
 
-	    Ticket ticket = ticketRepo.findById(id)
-	        .orElseThrow(() -> new RuntimeException("Ticket non trovato"));
+		Ticket ticket = ticketRepo.findById(id).orElseThrow(() -> new RuntimeException("Ticket non trovato"));
 
-		
 		if (bindingResult.hasErrors()) {
 			return "ticket/edit";
 		}
-
 
 		if (!formTicket.getTitolo().equals(ticket.getTitolo())) {
 			bindingResult.addError(new ObjectError("Titolo", "Il titolo non può essere cambiato"));
@@ -211,7 +205,22 @@ public class TicketController {
 
 		return "redirect:/tickets/{id}";
 	}
-	
+
+	@PostMapping("/{id}")
+	public String updateStatoTicket(@PathVariable Long id, @RequestParam("stato") String stato,
+			RedirectAttributes redirectAttributes) {
+
+		Ticket ticket = ticketRepo.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Ticket non trovato: " + id));
+
+		ticket.setStato(stato);
+		ticket.setDataModifica(LocalDateTime.now());
+		ticketRepo.save(ticket);
+
+		redirectAttributes.addFlashAttribute("successMessage", "Stato del ticket aggiornato con successo!");
+
+		return "redirect:/tickets/{id}";
+	}
 
 	@PostMapping("/delete/{id}")
 	public String deleteTicket(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
@@ -231,16 +240,15 @@ public class TicketController {
 	public String nota(@PathVariable Long id, Model model) {
 
 		Ticket ticket = ticketRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Ticket non trovato"));
-		
+
 		Nota newNota = new Nota();
 
 		newNota.setTicket(ticket);
 		newNota.setDataCreazione(LocalDate.now());
 
-		
-		 model.addAttribute("ticket", ticket);
-		    model.addAttribute("note", ticket.getNote());
-		    model.addAttribute("newNota", new Nota());
+		model.addAttribute("ticket", ticket);
+		model.addAttribute("note", ticket.getNote());
+		model.addAttribute("newNota", new Nota());
 
 		return "note/create";
 	}

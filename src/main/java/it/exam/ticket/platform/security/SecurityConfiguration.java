@@ -20,7 +20,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests()
             .requestMatchers("/api/tickets/**").permitAll()
             .requestMatchers("/tickets/create").hasAuthority("ADMIN")
-            .requestMatchers(HttpMethod.POST, "/tickets/**").hasAuthority("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/tickets/**").hasAnyAuthority("OPERATORE", "ADMIN")
             .requestMatchers("/operatori", "/operatori/**").hasAnyAuthority("OPERATORE","ADMIN")
             .requestMatchers("/tickets/edit/**").hasAnyAuthority("OPERATORE", "ADMIN")
             .requestMatchers("/tickets", "/tickets/**").hasAnyAuthority("OPERATORE", "ADMIN") 
