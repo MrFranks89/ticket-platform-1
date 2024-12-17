@@ -29,7 +29,7 @@
 				</p>
 
 				<div>
-					<form th:action="@{'/tickets/updateStatus/{id}'(id=${ticket.id})}" method="post">
+					<form th:action="@{'/tickets/{id}'(id=${ticket.id})}" method="post">
 						<label for="stato">Cambia Stato:</label>
 						<select id="stato" name="stato" class="form-select">
 							<option th:each="stato : ${statiTicket}" th:value="${stato}" th:text="${stato}"></option>
