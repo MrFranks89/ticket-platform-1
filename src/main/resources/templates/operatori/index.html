@@ -165,7 +165,7 @@
 							<th>N° Ticket</th>
 							<th>Stato Disponibilità</th>
 							<th></th>
-							<th></th>
+							<th sec:authorize="hasAuthority('ADMIN')"></th>
 
 						</tr>
 					</thead>
@@ -184,9 +184,9 @@
 									Dettagli Operatore<i class="fas fa-ticket"></i>
 								</a>
 							</td>
-							<td>
+							<td sec:authorize="hasAuthority('ADMIN')">
 								<form th:action="@{|/operatori/delete/${operatori.id}|}" method="post" class="col-md-8"
-									id="delete-form" th:object="${ope}" sec:authorize="hasAuthority('ADMIN')>
+									id="delete-form" th:object="${ope}">
 									<button class="btn btn-danger" type="submit" id="submitButton"
 										onclick="return confirm('Sei sicuro?')"><i class="fas fa-trash"></i></button>
 								</form>
