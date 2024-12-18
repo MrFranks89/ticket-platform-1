@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Admin {
@@ -16,13 +17,24 @@ public class Admin {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank
+	@NotBlank (message = "Il nome non può essere vuoto")
+	@NotNull (message = "Il nome non può essere nullo")
+	private String nome;
+
+	@NotBlank (message = "Il cognome non può essere vuoto")
+	@NotNull (message = "Il cognome non può essere nullo")
+	private String cognome;
+	
+	@NotBlank(message = "L'username non può essere vuoto")
+	@NotNull(message = "L'username non può essere nullo")
 	private String username;
 	
-	@NotBlank
+	@NotBlank(message = "La password non può essere vuota")
+	@NotNull(message = "La password non può essere nulla")
 	private String password;
 	
-	@NotBlank
+	@NotBlank(message = "La mail non può essere vuota")
+	@NotNull(message = "La mail non può essere nulla")
 	private String email;
 	
 	
@@ -35,6 +47,22 @@ public class Admin {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getCognome() {
+		return cognome;
+	}
+
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
 	}
 
 	public String getUsername() {

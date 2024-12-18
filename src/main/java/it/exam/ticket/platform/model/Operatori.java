@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Operatori {
@@ -18,14 +20,24 @@ public class Operatori {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@NotBlank (message = "Il nome non può essere vuoto")
+	@NotNull (message = "Il nome non può essere nullo")
 	private String nome;
 
+	@NotBlank (message = "Il cognome non può essere vuoto")
+	@NotNull (message = "Il cognome non può essere nullo")
 	private String cognome;
-
+	
+	@NotBlank (message = "L'username non può essere vuoto")
+	@NotNull (message = "L'username non può essere nullo")
 	private String username;
-
+	
+	@NotBlank(message = "La mail non può essere vuota")
+	@NotNull(message = "La mail non può essere nulla")
 	private String email;
-
+	
+	@NotBlank(message = "La password non può essere vuota")
+	@NotNull(message = "La password non può essere nulla")
 	private String password;
 
 	private boolean attivo;
