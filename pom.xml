@@ -9,11 +9,11 @@
 		<version>3.4.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>it.lessons.pizzeria</groupId>
-	<artifactId>spring-la-mia-pizzeria-webapi</artifactId>
+	<groupId>it.ticket.platform</groupId>
+	<artifactId>ticket-platform-1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-la-mia-pizzeria-webapi</name>
-	<description>Progetto che gestisce una pizzeria</description>
+	<name>ticket-platform-1</name>
+	<description>Piattaforma di gestione ticket</description>
 	<url />
 	<licenses>
 		<license />
