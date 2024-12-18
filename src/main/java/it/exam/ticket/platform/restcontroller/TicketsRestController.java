@@ -27,28 +27,82 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/tickets")
 public class TicketsRestController {
 
+	private static final Logger logger = LoggerFactory.getLogger(TicketsRestController.class);
+
 	@Autowired
-    private TicketRepository ticketRepository;
+	private TicketRepository ticketRepo;
 
-    @GetMapping
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
-    }
+	public TicketsRestController() {
+		System.out.println("TicketsRestController caricato!");
+	}
 
-    @GetMapping("/categoria")
-    public List<Ticket> getTicketsByCategoria(@RequestParam String categoria) {
-        return ticketRepository.findByCategoria_nome(categoria);
-    }
+	@GetMapping("/")
+	    public ResponseEntity<List<Ticket>> index(@RequestParam(name = "keyword", required = false) String keyword) {
+	        try {
+	            if (keyword != null && !keyword.isBlank()) {
+	                List<Ticket> tickets = ticketRepo.findByTitoloContaining(keyword);
+	                return new ResponseEntity<>(tickets, HttpStatus.OK);
+	            } else {
+	                List<Ticket> tickets = ticketRepo.findAll();
+	                return ResponseEntity.ok(tickets);
+	            }
+	        } catch (Exception e) {
+	            logger.error("Errore durante il recupero del ticket", e);
+	            return ResponseEntity.badRequest().build();
+	        }
+	    }
 
-    @GetMapping("/stato")
-    public List<Ticket> getTicketsByStato(@RequestParam String stato) {
-        return ticketRepository.findByStato(stato);
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<Ticket> update(@PathVariable Long id, @RequestBody Ticket ticket) {
+		try {
+			Optional<Ticket> byId = ticketRepo.findById(id);
+			if (byId.isEmpty()) {
+				return ResponseEntity.notFound().build();
+			}
 
-    @GetMapping("/filtri")
-    public List<Ticket> getTicketsByCategoriaAndStato(
-            @RequestParam String categoria,
-            @RequestParam String stato) {
-        return ticketRepository.findByCategoria_NomeAndStato(categoria, stato);
-    }
+			Ticket dbTicket = byId.get();
+			dbTicket.setDescrizione(ticket.getDescrizione());
+			ticketRepo.save(dbTicket);
+
+			return ResponseEntity.ok(dbTicket);
+		} catch (Exception e) {
+			logger.error("Errore durante l'aggiornamento del ticket", e);
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
+		try {
+			if (!ticketRepo.existsById(id)) {
+				return ResponseEntity.notFound().build();
+			}
+
+			ticketRepo.deleteById(id);
+			return ResponseEntity.noContent().build();
+		} catch (Exception e) {
+			logger.error("Errore durante la cancellazione del ticket", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@PostMapping
+	public Ticket create(@Valid @RequestBody Ticket ticket) {
+		return ticketRepo.save(ticket);
+	}
+
+	@GetMapping("/categoria")
+	public List<Ticket> getTicketsByCategoria(@RequestParam String categoria) {
+		return ticketRepo.findByCategoria_nome(categoria);
+	}
+
+	@GetMapping("/stato")
+	public List<Ticket> getTicketsByStato(@RequestParam String stato) {
+		return ticketRepo.findByStato(stato);
+	}
+
+	@GetMapping("/filtri")
+	public List<Ticket> getTicketsByCategoriaAndStato(@RequestParam String categoria, @RequestParam String stato) {
+		return ticketRepo.findByCategoria_NomeAndStato(categoria, stato);
+	}
 }

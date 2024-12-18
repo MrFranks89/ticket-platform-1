@@ -113,8 +113,10 @@
 </head>
 
 <body>
+
 	<nav th:replace="~{navbar :: navbar('operatore')}"> </nav>
-	<div class="container">
+
+	<div class="container-lg">
 		<div class="card">
 			<div class="card-header">
 				<h2>Informazioni Operatore</h2>
@@ -164,8 +166,23 @@
 				</table>
 			</div>
 		</div>
-
 	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var successMessage = document.getElementById('success-message');
+			if (successMessage) {
+				setTimeout(function () {
+					successMessage.style.transition = 'opacity 1s';
+					successMessage.style.opacity = '0';
+					setTimeout(function () {
+						successMessage.remove();
+					}, 1000);
+				}, 2000);
+			}
+		});
+	</script>
+
 	<div th:replace="~{fragments :: scripts}"></div>
 
 </body>
